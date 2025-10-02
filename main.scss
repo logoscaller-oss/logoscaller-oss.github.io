@@ -33,4 +33,7 @@ $social-icons-background-color: {{ site.social_icons_background_color }};
 @import 
     "base",
     "layout",
-    "github-markdown"
+    "github-markdown";
+
+// 导入奢华样式
+@import url("{{ '/assets/luxury-styles.css' | relative_url }}");

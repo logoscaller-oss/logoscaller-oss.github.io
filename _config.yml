@@ -10,7 +10,7 @@ playstore_link                            :                                     
 presskit_download_link                    : https://www.logoscaller.com                                          # Enter a link to downloadable file or (e.g. public Dropbox link to a .zip file). 
                                                                                       # Or upload your press kit file to assets and set path accordingly (e.g. "assets/your_press_kit.zip").
 
-app_icon                                  : # assets/appicon.png                      # Automatically populates if not set and if iOS app ID is set.  Otherwise enter path to icon file manually.
+app_icon                                  : assets/appicon.png                      # Automatically populates if not set and if iOS app ID is set.  Otherwise enter path to icon file manually.
 app_name                                  : LogosCaller                                           # Automatically populates if not set and if iOS app ID is set.  Otherwise enter manually.
 app_price                                 :                                           # Automatically populates if not set and if iOS app ID is set.  Otherwise enter manually.
 app_description                           : 多人多智能体实时会话软件，让多个智能体参加会议帮助出谋划策
@@ -80,35 +80,35 @@ features                                  :
 
 
 
-# Theme Settings
+# Theme Settings - 奢华主题
 topbar_color                              : "#000000"
-topbar_transparency                       : 0.1
-topbar_title_color                        : "#ffffff"
+topbar_transparency                       : 0.2
+topbar_title_color                        : "#FFD700"
 
 cover_image                               : assets/headerimage.png                    # Replace with alternative image path or image URL.
-cover_overlay_color                       : "#363b3d"
-cover_overlay_transparency                : 0.8
+cover_overlay_color                       : "#1a1a2e"
+cover_overlay_transparency                : 0.9
 
 device_color                              : black                                     # Set to: blue, black, yellow, coral or white.
 
-body_background_color                     : "#ffffff"
+body_background_color                     : "#0a0a0a"
 
-link_color                                : "#1d63ea"
+link_color                                : "#FFD700"
 
-app_title_color                           : "#ffffff"
-app_price_color                           : "#ffffff"
+app_title_color                           : "#FFD700"
+app_price_color                           : "#C0C0C0"
 app_description_color                     : "#ffffff"
 
-feature_title_color                       : "#000000"
-feature_text_color                        : "#666666"
+feature_title_color                       : "#FFD700"
+feature_text_color                        : "#ffffff"
 
-feature_icons_foreground_color            : "#1d63ea"
-feature_icons_background_color            : "#e6e6e6"
+feature_icons_foreground_color            : "#FFD700"
+feature_icons_background_color            : "rgba(255, 215, 0, 0.1)"
 
-social_icons_foreground_color             : "#666666"
-social_icons_background_color             : "#e6e6e6"
+social_icons_foreground_color             : "#FFD700"
+social_icons_background_color             : "rgba(255, 215, 0, 0.1)"
 
-footer_text_color                         : "#666666"
+footer_text_color                         : "#ffffff"
 
 
 
