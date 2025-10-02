@@ -1,122 +1,88 @@
 <footer>
-	<!-- 奢华页脚装饰 -->
-	<div class="footer-decoration">
-		<div class="luxury-pattern"></div>
-	</div>
-	
 	{% if site.your_name %}
-	<div class="footer-brand">
-		<h3 class="footer-brand-title">LogosCaller</h3>
-		<p class="footerText">由 {% if site.your_link %}<a href="{{ site.your_link }}">{% endif %}{{ site.your_name }}{% if site.your_link %}</a>{% endif %}{% if site.your_city %} 在 {{ site.your_city }}{% endif %} 精心打造</p>
-		<p class="footer-subtitle">让AI智能体成为您最得力的助手</p>
-	</div>
+	<p class="footerText">Made by {% if site.your_link %}<a href="{{ site.your_link }}">{% endif %}{{ site.your_name }}{% if site.your_link %}</a>{% endif %}{% if site.your_city %} in {{ site.your_city }}{% endif %}</p>
 	{% endif %}
-	
-	<div class="footer-content">
-		<div class="footer-section">
-			<h4 class="footer-section-title">产品特色</h4>
-			<ul class="footer-features">
-				<li>多人智能体会议</li>
-				<li>实时会话协作</li>
-				<li>智能出谋划策</li>
-				<li>个性化智能体</li>
-			</ul>
-		</div>
-		
-		<div class="footer-section">
-			<h4 class="footer-section-title">联系我们</h4>
-			<div class="footerIcons">
-				{% if site.linkedin_username %}
-					<a href="https://linkedin.com/in/{{ site.linkedin_username }}" title="LinkedIn">
-						<span class="fa-stack fa-1x">
-							<i class="socialIconBack fas fa-circle fa-stack-2x"></i>
-							<i class="socialIconTop fab fa-linkedin fa-stack-1x"></i>
-						</span>
-					</a>
-				{% endif %}
+	<div class="footerIcons">
 
-				{% if site.linkedin_company %}
-					<a href="https://linkedin.com/company/{{ site.linkedin_company }}" title="LinkedIn Company">
-						<span class="fa-stack fa-1x">
-							<i class="socialIconBack fas fa-circle fa-stack-2x"></i>
-							<i class="socialIconTop fab fa-linkedin fa-stack-1x"></i>
-						</span>
-					</a>
-				{% endif %}
+		{% if site.linkedin_username %}
+			<a href="https://linkedin.com/in/{{ site.linkedin_username }}">
+				<span class="fa-stack fa-1x">
+					<i class="socialIconBack fas fa-circle fa-stack-2x"></i>
+					<i class="socialIconTop fab fa-linkedin fa-stack-1x"></i>
+				</span>
+			</a>
+		{% endif %}
 
-				{% if site.facebook_username %}
-					<a href="https://facebook.com/{{ site.facebook_username }}" title="Facebook">
-						<span class="fa-stack fa-1x">
-							<i class="socialIconBack fas fa-circle fa-stack-2x"></i>
-							<i class="socialIconTop fab fa-facebook fa-stack-1x"></i>
-						</span>
-					</a>
-				{% endif %}
+		{% if site.linkedin_company %}
+			<a href="https://linkedin.com/company/{{ site.linkedin_company }}">
+				<span class="fa-stack fa-1x">
+					<i class="socialIconBack fas fa-circle fa-stack-2x"></i>
+					<i class="socialIconTop fab fa-linkedin fa-stack-1x"></i>
+				</span>
+			</a>
+		{% endif %}
 
-				{% if site.twitter_username %}
-					<a href="https://twitter.com/{{ site.twitter_username }}" title="Twitter">
-						<span class="fa-stack fa-1x">
-							<i class="socialIconBack fas fa-circle fa-stack-2x"></i>
-							<i class="socialIconTop fab fa-twitter fa-stack-1x"></i>
-						</span>
-					</a>
-				{% endif %}
+		{% if site.facebook_username %}
+			<a href="https://facebook.com/{{ site.facebook_username }}">
+				<span class="fa-stack fa-1x">
+					<i class="socialIconBack fas fa-circle fa-stack-2x"></i>
+					<i class="socialIconTop fab fa-facebook fa-stack-1x"></i>
+				</span>
+			</a>
+		{% endif %}
 
-				{% if site.instagram_username %}
-					<a href="https://instagram.com/{{ site.instagram_username }}" title="Instagram">
-						<span class="fa-stack fa-1x">
-							<i class="socialIconBack fas fa-circle fa-stack-2x"></i>
-							<i class="socialIconTop fab fa-instagram fa-stack-1x"></i>
-						</span>
-					</a>
-				{% endif %}
+		{% if site.twitter_username %}
+			<a href="https://twitter.com/{{ site.twitter_username }}">
+				<span class="fa-stack fa-1x">
+					<i class="socialIconBack fas fa-circle fa-stack-2x"></i>
+					<i class="socialIconTop fab fa-twitter fa-stack-1x"></i>
+				</span>
+			</a>
+		{% endif %}
 
-				{% if site.mastodon_link %}
-					<a rel="me" href="{{ site.mastodon_link }}" title="Mastodon">
-						<span class="fa-stack fa-1x">
-							<i class="socialIconBack fas fa-circle fa-stack-2x"></i>
-							<i class="socialIconTop fab fa-mastodon fa-stack-1x"></i>
-						</span>
-					</a>
-				{% endif %}
+		{% if site.instagram_username %}
+			<a href="https://instagram.com/{{ site.instagram_username }}">
+				<span class="fa-stack fa-1x">
+					<i class="socialIconBack fas fa-circle fa-stack-2x"></i>
+					<i class="socialIconTop fab fa-instagram fa-stack-1x"></i>
+				</span>
+			</a>
+		{% endif %}
 
-				{% if site.github_username %}
-					<a href="https://github.com/{{ site.github_username }}" title="GitHub">
-						<span class="fa-stack fa-1x">
-							<i class="socialIconBack fas fa-circle fa-stack-2x"></i>
-							<i class="socialIconTop fab fa-github fa-stack-1x"></i>
-						</span>
-					</a>
-				{% endif %}
+		{% if site.mastodon_link %}
+			<a rel="me" href="{{ site.mastodon_link }}">
+				<span class="fa-stack fa-1x">
+					<i class="socialIconBack fas fa-circle fa-stack-2x"></i>
+					<i class="socialIconTop fab fa-mastodon fa-stack-1x"></i>
+				</span>
+			</a>
+		{% endif %}
 
-				{% if site.email_address %}
-					<a href="mailto:{{ site.email_address }}" title="Email">
-						<span class="fa-stack fa-1x">
-							<i class="socialIconBack fas fa-circle fa-stack-2x"></i>
-							<i class="socialIconTop fas fa-envelope fa-stack-1x"></i>
-						</span>
-					</a>
-				{% endif %}
-			</div>
-		</div>
-		
-		<div class="footer-section">
-			<h4 class="footer-section-title">快速链接</h4>
-			<div class="footerLinks">
-				{% for page in site.pages %}
-					<a href="{{ page.url | relative_url }}" target="_self">{{ page.title }}</a>
-				{% endfor %}
-				{% if site.presskit_download_link %}
-					<a href="{{ site.presskit_download_link }}">Press Kit</a>
-				{% endif %}
-			</div>
-		</div>
+		{% if site.github_username %}
+			<a href="https://github.com/{{ site.github_username }}">
+				<span class="fa-stack fa-1x">
+					<i class="socialIconBack fas fa-circle fa-stack-2x"></i>
+					<i class="socialIconTop fab fa-github fa-stack-1x"></i>
+				</span>
+			</a>
+		{% endif %}
+
+		{% if site.email_address %}
+			<a href="mailto:{{ site.email_address }}">
+				<span class="fa-stack fa-1x">
+					<i class="socialIconBack fas fa-circle fa-stack-2x"></i>
+					<i class="socialIconTop fas fa-envelope fa-stack-1x"></i>
+				</span>
+			</a>
+		{% endif %}
+
 	</div>
-	
-	<div class="footer-bottom">
-		<p class="footer-copyright">
-			© 2024 LogosCaller. 保留所有权利。 | 
-			<span class="luxury-text">让AI智能体为您的生活增添智慧</span>
-		</p>
+	<div class="footerLinks">
+		{% for page in site.pages %}
+			<a href="{{ page.url | relative_url }}" target="_self">{{ page.title }}</a>
+		{% endfor %}
+		{% if site.presskit_download_link %}
+			<a href="{{ site.presskit_download_link }}">Press Kit</a>
+		{% endif %}
 	</div>
 </footer>
