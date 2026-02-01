@@ -1,5 +1,5 @@
 #page title
-page_title                                : SparkPool - 灵感变现社区
+page_title                                : logoscaller(想啥呢) - 灵感变现社区
 
 # App Info
 ios_app_id                                :                                             # Required. Enter iOS app ID to automatically populate name, price and icons (e.g. 718043190).
@@ -11,16 +11,16 @@ presskit_download_link                    :                                     
                                                                                       # Or upload your press kit file to assets and set path accordingly (e.g. "assets/your_press_kit.zip").
 
 app_icon                                  : assets/appicon.png                      # Automatically populates if not set and if iOS app ID is set.  Otherwise enter path to icon file manually.
-app_name                                  : SparkPool                                           # Automatically populates if not set and if iOS app ID is set.  Otherwise enter manually.
+app_name                                  : logoscaller(想啥呢)                                           # Automatically populates if not set and if iOS app ID is set.  Otherwise enter manually.
 app_price                                 : Free                                          # Automatically populates if not set and if iOS app ID is set.  Otherwise enter manually.
-app_description                           : SparkPool 是一个连接问题与解决方案的创新社区平台。这里汇聚了敏锐的观察者和富有创意的思考者，让每一个灵感都有价值。
+app_description                           : logoscaller(想啥呢) 是一个连接问题与解决方案的创新社区平台。这里汇聚了敏锐的观察者和富有创意的思考者，让每一个灵感都有价值。
 
 enable_smart_app_banner                   : true                                      # Set to true to show a smart app banner at top of page on mobile devices.
 
 
 
 # Information About Yourself
-your_name                                 : SparkPool Team                               
+your_name                                 : LogosCaller Team                               
 your_link                                 :                                      
 your_city                                 : HangZhou                                
 email_address                             : logoscaller@gmail.com

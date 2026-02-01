@@ -9,7 +9,7 @@ February 1, 2026
 
 # Privacy Policy
 
-Your privacy is important to us. This Privacy Policy explains how SparkPool collects, uses, and protects your information.
+Your privacy is important to us. This Privacy Policy explains how LogosCaller (想啥呢) collects, uses, and protects your information.
 
 <br>
 

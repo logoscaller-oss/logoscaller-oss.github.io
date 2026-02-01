@@ -5,13 +5,13 @@ include_in_header: true
 ---
 
 # Changelog
-Track the latest updates and improvements for SparkPool.
+Track the latest updates and improvements for LogosCaller (想啥呢).
 
 <br>
 
 ### `Latest`
 # **Version 1.0**
-Welcome to SparkPool! This is the initial release of your go-to community for connecting problems with solutions.
+Welcome to LogosCaller! This is the initial release of your go-to community for connecting problems with solutions.
 
 #### What's New
 - **Roast & Tips**: Share your frustrations and find solutions.
