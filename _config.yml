@@ -1,5 +1,5 @@
 #page title
-page_title                                : LogosCaller
+page_title                                : 想啥呢
 
 # App Info
 ios_app_id                                : 1234793120                                # Required. Enter iOS app ID to automatically populate name, price and icons (e.g. 718043190).
@@ -11,16 +11,16 @@ presskit_download_link                    : https://www.logoscaller.com         
                                                                                       # Or upload your press kit file to assets and set path accordingly (e.g. "assets/your_press_kit.zip").
 
 app_icon                                  : assets/appicon.png                      # Automatically populates if not set and if iOS app ID is set.  Otherwise enter path to icon file manually.
-app_name                                  : LogosCaller                                           # Automatically populates if not set and if iOS app ID is set.  Otherwise enter manually.
+app_name                                  : 想啥呢                                           # Automatically populates if not set and if iOS app ID is set.  Otherwise enter manually.
 app_price                                 :                                           # Automatically populates if not set and if iOS app ID is set.  Otherwise enter manually.
-app_description                           : 多人多智能体实时会话软件，让多个智能体参加会议帮助出谋划策
+app_description                           : 多人多模型实时会话系统，支持DeepSeek、GPT-4等多种AI模型，提供实时语音交互与智能打断功能。
 
 enable_smart_app_banner                   : true                                      # Set to true to show a smart app banner at top of page on mobile devices.
 
 
 
 # Information About Yourself
-your_name                                 : LogosCaller                               
+your_name                                 : 想啥呢                               
 your_link                                 : https://www.logoscaller.com                     
 your_city                                 : HangZhou                                
 email_address                             : logoscaller@gmail.com
@@ -38,45 +38,11 @@ mastodon_link                             :
 # Feature List                            Edit, add or remove features to be presented.
 features                                  :
 
-  - title                                 : 多人智能体会议
-    description                           : 创建虚拟会议室，邀请多个AI智能体参与讨论，获得多样化的观点和建议。
-    fontawesome_icon_name                 : users
+  - title                                 : 多模型集成
+    description                           : 支持DeepSeek、通义千问、GPT-4、Claude、Gemini等多种顶尖AI模型，满足不同场景需求。
+    fontawesome_icon_name                 : brain
     
-  - title                                 : 实时会话协作
-    description                           : 智能体之间实时交流，协同工作，为您的项目提供全面的分析和建议。
-    fontawesome_icon_name                 : comments
 
-  - title                                 : 智能出谋划策
-    description                           : 多个智能体从不同角度分析问题，提供创新性的解决方案和策略建议。
-    fontawesome_icon_name                 : lightbulb
-
-  - title                                 : 个性化智能体
-    description                           : 自定义智能体的专业领域和性格特点，打造专属的AI团队。
-    fontawesome_icon_name                 : user-cog
-
-  - title                                 : 会议记录与总结
-    description                           : 自动记录会议内容，生成会议纪要，方便后续查阅和跟进。
-    fontawesome_icon_name                 : file-alt
-  
-  - title                                 : 跨平台同步
-    description                           : 支持iOS、Android和Web端，随时随地参与智能体会议。
-    fontawesome_icon_name                 : sync
-
-  - title                                 : 智能推荐系统
-    description                           : 根据您的需求自动推荐最适合的智能体组合和会议主题。
-    fontawesome_icon_name                 : magic
-
-  - title                                 : 安全隐私保护
-    description                           : 端到端加密，确保您的会议内容和数据安全。
-    fontawesome_icon_name                 : shield-alt
-
-  - title                                 : 多语言支持
-    description                           : 支持中文、英文等多种语言，让全球用户都能轻松使用。
-    fontawesome_icon_name                 : globe
-
-  - title                                 : 云端存储
-    description                           : 会议记录云端保存，永不丢失，随时查看历史会议。
-    fontawesome_icon_name                 : cloud
 
 
 
@@ -111,17 +77,6 @@ social_icons_background_color             : "#e6e6e6"
 footer_text_color                         : "#666666"
 
 
-
-
-
-
-
-
-
-
-
-
-
 ####################################################
 ### Jekyll Configuration. No need to touch this. ###
 ####################################################
@@ -143,4 +98,3 @@ collections:
 
 # Markdown rendering
 markdown: kramdown
-
