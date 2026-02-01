@@ -1,22 +1,22 @@
 ---
 layout: page
-title: What's New
+title: 最新动态
 include_in_header: true
 ---
 
-# Changelog
-Track the latest updates and improvements for LogosCaller (想啥呢).
+# 更新日志
+关注 LogosCaller (想啥呢) 的最新更新和改进。
 
 <br>
 
-### `Latest`
-# **Version 1.0**
-Welcome to LogosCaller! This is the initial release of your go-to community for connecting problems with solutions.
+### `最新`
+# **1.0 版本**
+欢迎来到 LogosCaller！这是我们将问题与解决方案连接起来的社区平台的首个版本。
 
-#### What's New
-- **Roast & Tips**: Share your frustrations and find solutions.
-- **Idea Publishing**: Structure your innovative ideas and get AI feedback.
-- **AI Assistant**: Built-in AI to help you brainstorm and refine concepts.
-- **Credits System**: Earn rewards for your contributions.
+#### 新功能
+- **吐槽与建议**: 分享你的烦恼并寻找解决方案。
+- **发布创意**: 结构化你的创新想法并获得 AI 反馈。
+- **AI 助手**: 内置 AI 帮助你头脑风暴和完善概念。
+- **积分系统**: 通过你的贡献赚取奖励。
 
 <br>
