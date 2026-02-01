@@ -1,27 +1,27 @@
 #page title
-page_title                                : 想啥呢
+page_title                                : SparkPool - 灵感变现社区
 
 # App Info
-ios_app_id                                : 1234793120                                # Required. Enter iOS app ID to automatically populate name, price and icons (e.g. 718043190).
+ios_app_id                                :                                             # Required. Enter iOS app ID to automatically populate name, price and icons (e.g. 718043190).
 ios_app_country                           : china                                        # Required outside USA. Enter 2 letter country code as in https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
 
 appstore_link                             :                                           # Automatically populates if not set and if iOS app ID is set. Otherwise enter manually.
 playstore_link                            :                                           # Enter Google Play Store URL.
-presskit_download_link                    : https://www.logoscaller.com                                          # Enter a link to downloadable file or (e.g. public Dropbox link to a .zip file). 
+presskit_download_link                    :                                            # Enter a link to downloadable file or (e.g. public Dropbox link to a .zip file). 
                                                                                       # Or upload your press kit file to assets and set path accordingly (e.g. "assets/your_press_kit.zip").
 
 app_icon                                  : assets/appicon.png                      # Automatically populates if not set and if iOS app ID is set.  Otherwise enter path to icon file manually.
-app_name                                  : 想啥呢                                           # Automatically populates if not set and if iOS app ID is set.  Otherwise enter manually.
-app_price                                 :                                           # Automatically populates if not set and if iOS app ID is set.  Otherwise enter manually.
-app_description                           : 多人多模型实时会话系统，支持DeepSeek、GPT-4等多种AI模型，提供实时语音交互与智能打断功能。
+app_name                                  : SparkPool                                           # Automatically populates if not set and if iOS app ID is set.  Otherwise enter manually.
+app_price                                 : Free                                          # Automatically populates if not set and if iOS app ID is set.  Otherwise enter manually.
+app_description                           : SparkPool 是一个连接问题与解决方案的创新社区平台。这里汇聚了敏锐的观察者和富有创意的思考者，让每一个灵感都有价值。
 
 enable_smart_app_banner                   : true                                      # Set to true to show a smart app banner at top of page on mobile devices.
 
 
 
 # Information About Yourself
-your_name                                 : 想啥呢                               
-your_link                                 : https://www.logoscaller.com                     
+your_name                                 : SparkPool Team                               
+your_link                                 :                                      
 your_city                                 : HangZhou                                
 email_address                             : logoscaller@gmail.com
 linkedin_username                         :                                           
@@ -38,9 +38,21 @@ mastodon_link                             :
 # Feature List                            Edit, add or remove features to be presented.
 features                                  :
 
-  - title                                 : 多模型集成
-    description                           : 支持DeepSeek、通义千问、GPT-4、Claude、Gemini等多种顶尖AI模型，满足不同场景需求。
-    fontawesome_icon_name                 : brain
+  - title                                 : 吐槽即机遇
+    description                           : 发布对现有产品或服务的不满，寻找共鸣，从吐槽中发现未被满足的需求。
+    fontawesome_icon_name                 : fire
+    
+  - title                                 : 构思变现
+    description                           : 将你的创意结构化发布，支持付费查看和版权交易，让知识和灵感产生直接收益。
+    fontawesome_icon_name                 : lightbulb
+    
+  - title                                 : AI 深度赋能
+    description                           : 内置 AI 智能助手，帮你完善构思，甚至一键从吐槽生成解决方案。
+    fontawesome_icon_name                 : robot
+
+  - title                                 : 积分激励
+    description                           : 你的每一次贡献都能获得积分，不仅是荣誉，更是平台内的价值流通货币。
+    fontawesome_icon_name                 : gem
     
 
 
