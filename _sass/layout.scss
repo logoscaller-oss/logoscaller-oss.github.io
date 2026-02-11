@@ -17,6 +17,9 @@
 .headerBackground {
 	height: 115px;
 	background-color: rgba($header-color, $header-transparency);
+	backdrop-filter: blur(20px);
+	-webkit-backdrop-filter: blur(20px);
+	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 @media only screen and (max-width: 768px) {
@@ -481,16 +484,44 @@ nav>ul li a:active {
 	flex-grow: 1;
 	flex-wrap: wrap;
 	margin-top: 93px;
+	gap: 30px;
+	/* Add gap for cards */
 }
 
 .feature {
 	display: flex;
-	padding-top: 63px;
-	padding-left: 15px;
-	padding-right: 15px;
-	width: calc(100%/3);
+	flex-direction: column;
+	/* Stack icon and text */
+	align-items: flex-start;
+	padding: 32px;
+	width: calc((100% - 60px) / 3);
+	/* 3 cards with 30px gaps */
+
+	/* Glassmorphism Card Style */
+	background: rgba(255, 255, 255, 0.03);
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	border-radius: 24px;
+	backdrop-filter: blur(10px);
+	-webkit-backdrop-filter: blur(10px);
+
+	transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
+.feature:hover {
+	transform: translateY(-8px);
+	background: rgba(255, 255, 255, 0.08);
+	border-color: rgba(255, 255, 255, 0.2);
+	box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+.feature .fa {
+	font-size: 28px;
+	margin-bottom: 20px;
+	/* Icon container style if needed, relying on fa classes */
+}
+
+/* Remove old nth-child padding logic since we use gap */
+/*
 .feature:nth-child(-n+3) {
 	padding-top: 0px;
 }
@@ -502,6 +533,7 @@ nav>ul li a:active {
 .feature:nth-child(3n+1) {
 	padding-left: 0px;
 }
+*/
 
 .iconBack {
 	color: $feature-icons-background-color;
@@ -520,7 +552,8 @@ nav>ul li a:active {
 }
 
 .featureText {
-	margin-left: 18px;
+	margin-left: 0px;
+	/* Reset margin since we are stacking */
 }
 
 .featureText>h3 {
@@ -539,66 +572,31 @@ nav>ul li a:active {
 		flex-grow: 1;
 		flex-direction: row;
 		flex-wrap: wrap;
-		margin-top: 11px;
+		margin-top: 40px;
+		gap: 20px;
 	}
 
 	.feature {
 		display: flex;
-		padding-top: 41px;
-		padding-left: 15px;
-		padding-right: 15px;
+		flex-direction: column;
+		padding: 24px;
 		width: 100%;
+		/* Single column on mobile/tablet */
 	}
 
-	.feature:nth-child(-n+3) {
-		padding-top: 41px;
-	}
-
-	.feature:nth-child(1) {
-		padding-top: 0px;
-	}
-
-	.feature:nth-child(3n) {
-		padding-right: 15px;
-	}
-
-	.feature:nth-child(3n+1) {
-		padding-left: 15px;
-	}
-
+	/* Remove complex nth-child padding overrides as we use gap now */
 }
 
 @media only screen and (max-width: 375px) {
 
 	.features {
-		flex-grow: 1;
-		flex-direction: row;
-		flex-wrap: wrap;
-		margin-top: 11px;
+		margin-top: 30px;
+		gap: 15px;
 	}
 
 	.feature {
-		display: flex;
-		padding-top: 41px;
-		padding-left: 0px;
-		padding-right: 0px;
+		padding: 20px;
 		width: 100%;
-	}
-
-	.feature:nth-child(-n+3) {
-		padding-top: 41px;
-	}
-
-	.feature:nth-child(1) {
-		padding-top: 0px;
-	}
-
-	.feature:nth-child(3n) {
-		padding-right: 0px;
-	}
-
-	.feature:nth-child(3n+1) {
-		padding-left: 0px;
 	}
 
 }

@@ -1,5 +1,5 @@
 #page title
-page_title                                : logoscaller(想啥呢) - 灵感变现社区
+page_title                                : SparkPool (烛照台) - 让灵感无感记录，让创意自然生长
 
 # App Info
 ios_app_id                                :                                             # Required. Enter iOS app ID to automatically populate name, price and icons (e.g. 718043190).
@@ -9,21 +9,22 @@ appstore_link                             :                                     
 playstore_link                            :                                           # Enter Google Play Store URL.
 presskit_download_link                    :                                            # Enter a link to downloadable file or (e.g. public Dropbox link to a .zip file). 
                                                                                       # Or upload your press kit file to assets and set path accordingly (e.g. "assets/your_press_kit.zip").
+official_website_link                     : https://www.sparkpool.com.cn
 
 app_icon                                  : assets/appicon.png                      # Automatically populates if not set and if iOS app ID is set.  Otherwise enter path to icon file manually.
-app_name                                  : logoscaller(想啥呢)                                           # Automatically populates if not set and if iOS app ID is set.  Otherwise enter manually.
+app_name                                  : SparkPool                                           # Automatically populates if not set and if iOS app ID is set.  Otherwise enter manually.
 app_price                                 : Free                                          # Automatically populates if not set and if iOS app ID is set.  Otherwise enter manually.
-app_description                           : logoscaller(想啥呢) 是一个连接问题与解决方案的创新社区平台。这里汇聚了敏锐的观察者和富有创意的思考者，让每一个灵感都有价值。
+app_description                           : SparkPool - 让灵感无感记录，让创意自然生长。MCP (Moment Capture Protocol) 无感记录技术，捕捉每一个灵光乍现的瞬间。就像呼吸一样自然，让创意记录成为本能。了解更多：https://www.sparkpool.com.cn
 
 enable_smart_app_banner                   : true                                      # Set to true to show a smart app banner at top of page on mobile devices.
 
 
 
 # Information About Yourself
-your_name                                 : LogosCaller Team                               
-your_link                                 :                                      
+your_name                                 : SparkPool Team                               
+your_link                                 : https://www.sparkpool.com.cn                                     
 your_city                                 : HangZhou                                
-email_address                             : logoscaller@gmail.com
+email_address                             : contact@sparkpool.com.cn
 linkedin_username                         :                                           
 linkedin_company                          :                                           
 facebook_username                         :                                           
@@ -33,18 +34,16 @@ github_username                           :
 youtube_username                          :
 mastodon_link                             : 
 
-
-
 # Feature List                            Edit, add or remove features to be presented.
 features                                  :
 
-  - title                                 : 吐槽即机遇
-    description                           : 发布对现有产品或服务的不满，寻找共鸣，从吐槽中发现未被满足的需求。
-    fontawesome_icon_name                 : fire
+  - title                                 : MCP无感记录
+    description                           : MCP (Moment Capture Protocol) 是SparkPool独创的灵感捕捉技术。无需打开应用、填写复杂表单，自然捕捉每一个稍纵即逝的想法。
+    fontawesome_icon_name                 : bolt
     
-  - title                                 : 构思变现
-    description                           : 将你的创意结构化发布，支持付费查看和版权交易，让知识和灵感产生直接收益。
-    fontawesome_icon_name                 : lightbulb
+  - title                                 : 创意自然生长
+    description                           : 你的每一次吐槽、每一个想法都能被自然地记录下来。就像呼吸一样自然，让创意记录成为本能。
+    fontawesome_icon_name                 : seedling
     
   - title                                 : AI 深度赋能
     description                           : 内置 AI 智能助手，帮你完善构思，甚至一键从吐槽生成解决方案。
@@ -59,34 +58,34 @@ features                                  :
 
 
 # Theme Settings
-topbar_color                              : "#000000"
-topbar_transparency                       : 0.1
+topbar_color                              : "#1A1A1A"
+topbar_transparency                       : 0.8
 topbar_title_color                        : "#ffffff"
 
 cover_image                               : assets/headerimage.png                    # Replace with alternative image path or image URL.
-cover_overlay_color                       : "#363b3d"
-cover_overlay_transparency                : 0.8
+cover_overlay_color                       : "#000000"
+cover_overlay_transparency                : 0.7
 
 device_color                              : black                                     # Set to: blue, black, yellow, coral or white.
 
-body_background_color                     : "#ffffff"
+body_background_color                     : "#1A1A1A"
 
-link_color                                : "#1d63ea"
+link_color                                : "#5E5CE6"
 
 app_title_color                           : "#ffffff"
 app_price_color                           : "#ffffff"
-app_description_color                     : "#ffffff"
+app_description_color                     : "#e0e0e0"
 
-feature_title_color                       : "#000000"
-feature_text_color                        : "#666666"
+feature_title_color                       : "#ffffff"
+feature_text_color                        : "#cccccc"
 
-feature_icons_foreground_color            : "#1d63ea"
-feature_icons_background_color            : "#e6e6e6"
+feature_icons_foreground_color            : "#5E5CE6"
+feature_icons_background_color            : "#2c2c2e"
 
-social_icons_foreground_color             : "#666666"
-social_icons_background_color             : "#e6e6e6"
+social_icons_foreground_color             : "#ffffff"
+social_icons_background_color             : "#2c2c2e"
 
-footer_text_color                         : "#666666"
+footer_text_color                         : "#888888"
 
 
 ####################################################

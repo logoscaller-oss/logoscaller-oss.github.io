@@ -6,7 +6,7 @@ include_in_header: true
 
 # 诚邀内测体验官
 
-我们正在寻找热情的用户参与 LogosCaller (想啥呢) 的内测！
+我们正在寻找热情的用户参与 LogosCaller (烛光) 的内测！
 
 ### 联系作者
 - **微信**: CS224N
