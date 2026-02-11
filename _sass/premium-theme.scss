@@ -235,6 +235,25 @@ header {
             color: $secondary-color;
         }
 
+        .app-icon-container {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.9); // Milky white
+            border-radius: 18px; // iOS style rounded corners
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+
+            .app-icon {
+                width: 75px;
+                height: 75px;
+                object-fit: contain;
+                border-radius: 0;
+            }
+        }
+
         h3 {
             margin-bottom: 15px;
         }
