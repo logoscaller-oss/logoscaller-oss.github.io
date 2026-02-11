@@ -9,12 +9,12 @@ appstore_link                             :                                     
 playstore_link                            :                                           # Enter Google Play Store URL.
 presskit_download_link                    :                                            # Enter a link to downloadable file or (e.g. public Dropbox link to a .zip file). 
                                                                                       # Or upload your press kit file to assets and set path accordingly (e.g. "assets/your_press_kit.zip").
-official_website_link                     : https://www.sparkpool.com.cn
+official_website_link                     : https://www.logoscaller.com
 
 app_icon                                  : assets/appicon.png                      # Automatically populates if not set and if iOS app ID is set.  Otherwise enter path to icon file manually.
 app_name                                  : SparkPool                                           # Automatically populates if not set and if iOS app ID is set.  Otherwise enter manually.
 app_price                                 : Free                                          # Automatically populates if not set and if iOS app ID is set.  Otherwise enter manually.
-app_description                           : SparkPool - 让灵感无感记录，让创意自然生长。MCP (Moment Capture Protocol) 无感记录技术，捕捉每一个灵光乍现的瞬间。就像呼吸一样自然，让创意记录成为本能。了解更多：https://www.sparkpool.com.cn
+app_description                           : SparkPool - 让灵感无感记录，让创意自然生长。MCP (Moment Capture Protocol) 无感记录技术，捕捉每一个灵光乍现的瞬间。就像呼吸一样自然，让创意记录成为本能。了解更多：https://www.logoscaller.com
 
 enable_smart_app_banner                   : true                                      # Set to true to show a smart app banner at top of page on mobile devices.
 
@@ -22,7 +22,7 @@ enable_smart_app_banner                   : true                                
 
 # Information About Yourself
 your_name                                 : SparkPool Team                               
-your_link                                 : https://www.sparkpool.com.cn                                     
+your_link                                 : https://www.logoscaller.com                                     
 your_city                                 : HangZhou                                
 email_address                             : contact@sparkpool.com.cn
 linkedin_username                         :                                           
