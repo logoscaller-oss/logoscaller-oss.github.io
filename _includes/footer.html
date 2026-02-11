@@ -1,67 +1,19 @@
-<footer class="site-footer">
-	<div class="footer-container">
-		<!-- Brand / About Column -->
-		<div class="footer-col brand-col">
-			<h3 class="footer-logo">{{ site.app_name }}</h3>
-			<p class="footer-tagline">{{ site.app_description }}</p>
-			<div class="copyright">
-				&copy; {{ site.time | date: '%Y' }} {{ site.your_name }}. All rights reserved.
-			</div>
-		</div>
-
-		<!-- Navigation Column -->
-		<div class="footer-col links-col">
-			<h4>Menu</h4>
-			<ul>
-				{% for page in site.pages %}
-				{% if page.title and page.url %}
-				<li><a href="{{ page.url | relative_url }}">{{ page.title }}</a></li>
-				{% endif %}
-				{% endfor %}
-			</ul>
-		</div>
-
-		<!-- Social / Contact Column -->
-		<div class="footer-col social-col">
-			<h4>Connect</h4>
-			<div class="social-icons">
-				{% if site.linkedin_username %}
-				<a href="https://linkedin.com/in/{{ site.linkedin_username }}" aria-label="LinkedIn">
-					<i class="fab fa-linkedin"></i>
-				</a>
-				{% endif %}
-				{% if site.facebook_username %}
-				<a href="https://facebook.com/{{ site.facebook_username }}" aria-label="Facebook">
-					<i class="fab fa-facebook"></i>
-				</a>
-				{% endif %}
-				{% if site.twitter_username %}
-				<a href="https://twitter.com/{{ site.twitter_username }}" aria-label="Twitter">
-					<i class="fab fa-twitter"></i>
-				</a>
-				{% endif %}
-				{% if site.instagram_username %}
-				<a href="https://instagram.com/{{ site.instagram_username }}" aria-label="Instagram">
-					<i class="fab fa-instagram"></i>
-				</a>
-				{% endif %}
-				{% if site.github_username %}
-				<a href="https://github.com/{{ site.github_username }}" aria-label="GitHub">
-					<i class="fab fa-github"></i>
-				</a>
-				{% endif %}
-				{% if site.email_address %}
-				<a href="mailto:{{ site.email_address }}" aria-label="Email">
-					<i class="fas fa-envelope"></i>
-				</a>
-				{% endif %}
-			</div>
-			{% if site.presskit_download_link %}
-			<div class="footer-extra-link">
-				<a href="{{ site.presskit_download_link }}" class="action-link">Download Press Kit <i
-						class="fas fa-arrow-right"></i></a>
-			</div>
-			{% endif %}
-		</div>
-	</div>
-</footer>
+<div class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div class="footer-inner">
+          <h2 class="footer-title">{{site.title}}</h2>
+          <ul>
+            {% assign footermenu = site.data.menus.footer | sort: 'weight'  %}
+            {% for item in footermenu %}
+            <li class="{% if item.url == page.url %}active{% endif %}">
+              <a href="{{ item.url | relative_url }}">{{ item.name }}</a>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
