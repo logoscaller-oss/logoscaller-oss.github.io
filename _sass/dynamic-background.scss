@@ -1,0 +1,90 @@
+// Dynamic Background Variables
+$aurora-bg: #0a0a0a;
+$aurora-1: #5E5CE6; // SparkPool Purple
+$aurora-2: #00C7BE; // Teal
+$aurora-3: #ff2d55; // Accent Pink/Red for depth
+$aurora-4: #32d74b; // Accent Green for depth
+
+.dynamic-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    overflow: hidden;
+    background-color: $aurora-bg;
+    filter: blur(80px);
+    /* Smudge effect */
+}
+
+.aurora-blob {
+    position: absolute;
+    border-radius: 50%;
+    mix-blend-mode: screen;
+    opacity: 0.7;
+    animation: move-aurora 10s infinite alternate;
+}
+
+.aurora-1 {
+    top: -10%;
+    left: -10%;
+    width: 50vw;
+    height: 50vw;
+    background: radial-gradient(circle, rgba($aurora-1, 0.8) 0%, rgba($aurora-1, 0) 70%);
+    animation-duration: 15s;
+    animation-delay: -2s;
+}
+
+.aurora-2 {
+    bottom: -10%;
+    right: -10%;
+    width: 60vw;
+    height: 60vw;
+    background: radial-gradient(circle, rgba($aurora-2, 0.8) 0%, rgba($aurora-2, 0) 70%);
+    animation-duration: 18s;
+    animation-delay: -5s;
+}
+
+.aurora-3 {
+    top: 30%;
+    left: 40%;
+    width: 40vw;
+    height: 40vw;
+    background: radial-gradient(circle, rgba($aurora-3, 0.6) 0%, rgba($aurora-3, 0) 70%);
+    animation-duration: 20s;
+    animation-delay: -8s;
+}
+
+.aurora-4 {
+    bottom: 20%;
+    left: 10%;
+    width: 35vw;
+    height: 35vw;
+    background: radial-gradient(circle, rgba($aurora-4, 0.5) 0%, rgba($aurora-4, 0) 70%);
+    animation-duration: 25s;
+    animation-delay: -12s;
+}
+
+
+@keyframes move-aurora {
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    25% {
+        transform: translate(10%, 10%) scale(1.1);
+    }
+
+    50% {
+        transform: translate(-5%, 20%) scale(0.9);
+    }
+
+    75% {
+        transform: translate(-15%, -10%) scale(1.05);
+    }
+
+    100% {
+        transform: translate(5%, -5%) scale(1);
+    }
+}
