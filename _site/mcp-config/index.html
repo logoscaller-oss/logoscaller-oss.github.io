@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<base target="_blank">
+
+	<title class="pageTitle">SparkPool (烛照台) - 让灵感无感记录，让创意自然生长</title>
+	<meta name="description" content="SparkPool - 让灵感无感记录，让创意自然生长。MCP (Moment Capture Protocol) 无感记录技术，捕捉每一个灵光乍现的瞬间。就像呼吸一样自然，让创意记录成为本能。了解更多：https://www.logoscaller.com">
+
+	<link rel="shortcut icon" href="/assets/appicon.png">
+
+	<!-- Smart App Banner -->
+	
+		<meta name="apple-itunes-app" content="app-id=">
+	
+
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+	<link rel="stylesheet" href="/main.css">
+</head>
+
+<body class="subPageBody">
+    <div class="headerBackground subPageHeaderBackground">
+        <div class="container subPageContainer">
+        <header>
+	<div class="logo">
+		<div class="appIconShadow">
+			<svg width="0" height="0">
+				<defs>
+					<clipPath id="shape">
+							<path id="shape" class="cls-1" d="M6181.23,233.709v-1.792c0-.5-0.02-1-0.02-1.523a24.257,24.257,0,0,0-.28-3.3,11.207,11.207,0,0,0-1.04-3.132,10.683,10.683,0,0,0-1.95-2.679,10.384,10.384,0,0,0-2.68-1.943,10.806,10.806,0,0,0-3.13-1.038,19.588,19.588,0,0,0-3.3-.285c-0.5-.017-1-0.017-1.52-0.017h-22.39c-0.51,0-1.01.017-1.53,0.017a24.041,24.041,0,0,0-3.3.285,11.009,11.009,0,0,0-3.13,1.038,10.491,10.491,0,0,0-4.62,4.622,10.893,10.893,0,0,0-1.04,3.132,19.2,19.2,0,0,0-.28,3.3c-0.02.5-.02,1-0.02,1.523v22.392c0,0.5.02,1,.02,1.524a24.257,24.257,0,0,0,.28,3.3,10.9,10.9,0,0,0,1.04,3.132,10.491,10.491,0,0,0,4.62,4.622,11.04,11.04,0,0,0,3.13,1.038,19.891,19.891,0,0,0,3.3.285c0.51,0.017,1.01.017,1.53,0.017h22.39c0.5,0,1-.017,1.52-0.017a24.221,24.221,0,0,0,3.3-.285,10.836,10.836,0,0,0,3.13-1.038,10.408,10.408,0,0,0,2.68-1.943,10.683,10.683,0,0,0,1.95-2.679,11.217,11.217,0,0,0,1.04-3.132,20.257,20.257,0,0,0,.28-3.3c0.02-.5.02-1,0.02-1.524v-20.6h0Z" transform="translate(-6131 -218)"/>
+					</clipPath>
+				</defs>
+			</svg>
+			
+				<a href="../" target="_self"><img class="headerIcon" src="/assets/appicon.png"></a>
+			
+			<div class="divider"></div>
+		</div>
+		<p class="headerName">SparkPool</p>
+	</div>
+	<nav class="scroll">
+		<ul>
+			
+				
+				<li><a href="/changelog/" target="_self">最新动态</a></li>
+				
+			
+				
+				<li><a href="/mcp-config/" target="_self">MCP 配置</a></li>
+				
+			
+				
+			
+				
+				<li><a href="/recruit/" target="_self">招募内测</a></li>
+				
+			
+			
+		</ul>
+	</nav>
+</header>
+            <article class="page markdown-body">
+                <h1 id="sparkpool-mcp-server-配置指南">SparkPool MCP Server 配置指南</h1>
+
+<p>SparkPool 提供官方 MCP (Model Context Protocol) Server，允许您的 AI Agent（如 <strong>Cursor</strong>、<strong>Windsurf</strong>、<strong>Claude Desktop</strong> 等）直接与 SparkPool 交互。您可以让 AI 直接发布 Idea、吐槽，或查询您的数据，实现真正的“无感记录”。</p>
+
+<div align="center">
+  <img src="https://img.shields.io/badge/MCP-Enabled-blue?style=for-the-badge&amp;logo=python" alt="MCP Enabled" />
+  <br />
+</div>
+
+<hr />
+
+<h2 id="1-获取-api-token">1. 获取 API Token</h2>
+
+<p>在使用 MCP Server 之前，您需要获取您的专属 API Token。</p>
+
+<ol>
+  <li>打开 <strong>SparkPool App</strong>。</li>
+  <li>进入 <strong>个人中心 (Profile)</strong> 页面。</li>
+  <li>点击 <strong>MCP 设置 (MCP Settings)</strong>。</li>
+  <li>点击 <strong>生成 Token</strong> 按钮，并复制生成的 Token。</li>
+</ol>
+
+<blockquote>
+  <p>[!IMPORTANT]
+请妥善保管您的 Token，不要泄露给他人。如果您重新生成 Token，旧的 Token 将立即失效，您需要更新所有客户端的配置。</p>
+</blockquote>
+
+<hr />
+
+<h2 id="2-安装与配置">2. 安装与配置</h2>
+
+<p>SparkPool MCP Server 支持通过 <code class="language-plaintext highlighter-rouge">uvx</code> 直接运行（推荐），或通过 <code class="language-plaintext highlighter-rouge">pip</code> 安装。</p>
+
+<h3 id="核心配置参数">核心配置参数</h3>
+
+<p>在配置任何客户端时，您都需要以下 JSON 配置：</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"mcpServers"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"sparkpool_mcp"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"command"</span><span class="p">:</span><span class="w"> </span><span class="s2">"uvx"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"sparkpool-mcp"</span><span class="w">
+      </span><span class="p">],</span><span class="w">
+      </span><span class="nl">"env"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"SPARKPOOL_API_TOKEN"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;您的_API_TOKEN&gt;"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"SPARKPOOL_API_URL"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://www.sparkpool.com.cn"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="nl">"disabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"autoApprove"</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>请将 <code class="language-plaintext highlighter-rouge">&lt;您的_API_TOKEN&gt;</code> 替换为您在 App 中获取的真实 Token。</p>
+
+<hr />
+
+<h2 id="3-客户端配置指南">3. 客户端配置指南</h2>
+
+<h3 id="-cursor--windsurf">🤖 Cursor / Windsurf</h3>
+
+<ol>
+  <li>打开 Cursor / Windsurf 设置。
+2.这是定位到 <strong>Features</strong> &gt; <strong>MCP</strong>。</li>
+  <li>点击 <strong>Add New MCP Server</strong>。</li>
+  <li>填写如下信息：
+    <ul>
+      <li><strong>Name</strong>: <code class="language-plaintext highlighter-rouge">sparkpool_mcp</code></li>
+      <li><strong>Type</strong>: <code class="language-plaintext highlighter-rouge">stdio</code></li>
+      <li><strong>Command</strong>: <code class="language-plaintext highlighter-rouge">uvx</code> (确保您的系统已安装 <code class="language-plaintext highlighter-rouge">uv</code>)</li>
+      <li><strong>Args</strong>: <code class="language-plaintext highlighter-rouge">sparkpool-mcp</code></li>
+      <li><strong>Environment Variables</strong>:
+        <ul>
+          <li><code class="language-plaintext highlighter-rouge">SPARKPOOL_API_TOKEN</code>: <code class="language-plaintext highlighter-rouge">您的Token</code></li>
+          <li><code class="language-plaintext highlighter-rouge">SPARKPOOL_API_URL</code>: <code class="language-plaintext highlighter-rouge">https://www.sparkpool.com.cn</code></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ol>
+
+<h3 id="️-claude-desktop-macos">🖥️ Claude Desktop (macOS)</h3>
+
+<ol>
+  <li>打开配置文件：
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>code ~/Library/Application<span class="se">\ </span>Support/Claude/claude_desktop_config.json
+</code></pre></div>    </div>
+  </li>
+  <li>将上述 JSON 配置添加到 <code class="language-plaintext highlighter-rouge">mcpServers</code> 节点中。</li>
+  <li>重启 Claude Desktop。</li>
+</ol>
+
+<hr />
+
+<h2 id="4-功能演示">4. 功能演示</h2>
+
+<p>配置成功后，您可以直接对 AI 说：</p>
+
+<ul>
+  <li><strong>发布想法</strong>：
+    <blockquote>
+      <p>“我有个新点子，关于通过 AI 自动整理相册的，帮我记录到 SparkPool。”</p>
+    </blockquote>
+  </li>
+  <li><strong>发布吐槽</strong>：
+    <blockquote>
+      <p>“我要吐槽一下今天的咖啡太难喝了，帮我发个 Roast。”</p>
+    </blockquote>
+  </li>
+  <li><strong>查询数据</strong>（即将上线）：
+    <blockquote>
+      <p>“帮我总结一下我最近发布的关于 AI 的想法。”</p>
+    </blockquote>
+  </li>
+</ul>
+
+<hr />
+
+<h2 id="常见问题">常见问题</h2>
+
+<p><strong>Q: 为什么连接失败？</strong>
+A: 请检查：</p>
+<ol>
+  <li><code class="language-plaintext highlighter-rouge">uv</code> 是否已安装？(运行 <code class="language-plaintext highlighter-rouge">uv --version</code> 检查)</li>
+  <li>Token 是否正确？(尝试在 App 中重新生成)</li>
+  <li>网络是否正常？</li>
+</ol>
+
+<p><strong>Q: 是否支持 Windows?</strong>
+A: 支持。请确保已安装 Python 和 uv，并将 <code class="language-plaintext highlighter-rouge">uvx</code> 替换为完整的可执行路径（如果需要）。</p>
+
+<hr />
+
+<p><br />
+<em>如有任何问题，欢迎在 App 内反馈或联系我们。</em></p>
+
+            </article>
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+
+    </div>
+</body>
+
+</html>
