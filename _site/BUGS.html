@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Bug Report: CSS Loading Error | LogosCaller</title>
+<meta name="generator" content="Jekyll v3.9.5" />
+<meta property="og:title" content="Bug Report: CSS Loading Error" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Integrating AI into the details of life." />
+<meta property="og:description" content="Integrating AI into the details of life." />
+<link rel="canonical" href="http://localhost:4000/BUGS.html" />
+<meta property="og:url" content="http://localhost:4000/BUGS.html" />
+<meta property="og:site_name" content="LogosCaller" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Bug Report: CSS Loading Error" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"Integrating AI into the details of life.","headline":"Bug Report: CSS Loading Error","url":"http://localhost:4000/BUGS.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=67b9d1a65631ee577815982b04a5b5a6d02d2b5d">
+    <!-- start custom head snippets, customize with your own _includes/head-custom.html file -->
+
+<!-- Setup Google Analytics -->
+
+
+
+<!-- You can set your favicon here -->
+<!-- link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" -->
+
+<!-- end custom head snippets -->
+
+  </head>
+  <body>
+    <div class="container-lg px-3 my-5 markdown-body">
+      
+      <h1><a href="http://localhost:4000/">LogosCaller</a></h1>
+      
+
+      <h1 id="bug-report-css-loading-error">Bug Report: CSS Loading Error</h1>
+
+<h2 id="issue-description">Issue Description</h2>
+<p><strong>Error Message:</strong> <code class="language-plaintext highlighter-rouge">[2026-02-12 10:29:24] ERROR '/ /css/main.css' not found.</code></p>
+
+<h2 id="cause">Cause</h2>
+<p>An extra space was accidentally introduced in the <code class="language-plaintext highlighter-rouge">href</code> attribute of the main CSS link within <code class="language-plaintext highlighter-rouge">_layouts/premium.html</code>.</p>
+
+<p><strong>Incorrect Code:</strong></p>
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"/%20/css/main.css"</span><span class="nt">&gt;</span>
+</code></pre></div></div>
+
+<p>The space before <code class="language-plaintext highlighter-rouge">/css/main.css</code> caused Jekyll’s <code class="language-plaintext highlighter-rouge">relative_url</code> filter to generate a path with an encoded space (<code class="language-plaintext highlighter-rouge">%20</code>), leading to a 404 error when the browser attempted to load the stylesheet.</p>
+
+<h2 id="resolution">Resolution</h2>
+<p>The extra space was removed to correctly point to the CSS file.</p>
+
+<p><strong>Corrected Code:</strong></p>
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"/css/main.css"</span><span class="nt">&gt;</span>
+</code></pre></div></div>
+
+<h2 id="status">Status</h2>
+<p><strong>Fixed</strong> on 2026-02-12.</p>
+
+
+      
+      <div class="footer border-top border-gray-light mt-5 pt-3 text-right text-gray">
+        This site is open source. <a href="https://github.com/logoscaller-oss/logoscaller-oss.github.io/edit/gh-pages/BUGS.md">Improve this page</a>.
+      </div>
+      
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.0/anchor.min.js" integrity="sha256-lZaRhKri35AyJSypXXs4o6OPFTbTmUoltBbDCbdzegg=" crossorigin="anonymous"></script>
+    <script>anchors.add();</script>
+  </body>
+</html>
