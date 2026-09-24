@@ -1,100 +1,45 @@
 /**
  * premium-interactions.js
  * Mouse-driven micro-interactions for the LogosCaller premium theme.
+ * Built on window.LogosFx (js/fx-core.js): one shared ticker, shared
+ * pointer state, shared capability flags.
  *
  * Effects:
- *  - Contextual cursor pill (antigravity.google style): the native
- *    cursor is replaced by a floating icon+label pill over any
- *    [data-cursor-pill] zone. It trails the pointer with an eased
- *    lag and pops in with a springy overshoot.
- *  - Cursor spotlight with eased (lerped) follow and click boost
+ *  - Contextual cursor pill (antigravity.google style) with
+ *      · velocity squash & stretch (physics feel)
+ *      · ghost trail echoes while moving fast
+ *      · dwell-morph into a circular image preview on rich zones
+ *      · press feedback, zone-hop label swaps, scroll bounds drop
+ *  - Cursor spotlight with eased follow and click boost
  *  - Pointer parallax on the aurora background and hero content
- *  - 3D tilt + traveling glare on product cards
+ *  - 3D tilt + traveling glare + edge border-light on product cards
  *  - Magnetic buttons
+ *  - Click ripple rings
+ *  - Sliding nav indicator (one gliding pill across the links)
+ *  - Flashlight inscription (hidden line revealed by the cursor)
+ *  - View Transitions circular reveal for same-page anchors
  *  - Scroll reveal with per-section stagger
  *
  * Graceful degradation:
- *  - No JS: nothing is added, page renders exactly as before and the
- *    native cursor is never hidden.
+ *  - No JS / missing core: nothing is added, page renders as before.
  *  - Touch devices: only scroll reveal is enabled.
- *  - prefers-reduced-motion: only scroll reveal (opacity-only) is enabled.
- *
- * Architecture: all pointer-driven animation runs in ONE shared rAF
- * ticker. Smoothing is time-based (identical feel at 60/120/144 Hz),
- * and the ticker parks itself once every subscriber settles.
+ *  - prefers-reduced-motion: only scroll reveal (opacity-only).
  */
 (function () {
     'use strict';
 
-    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var finePointer = window.matchMedia('(pointer: fine)').matches;
-    var enablePointerFx = finePointer && !reduceMotion;
-
-    function onReady(fn) {
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', fn);
-        } else {
-            fn();
-        }
+    var Fx = window.LogosFx;
+    if (!Fx) {
+        return;
     }
 
-    function each(list, fn) {
-        Array.prototype.forEach.call(list, fn);
-    }
-
-    function clamp(value, min, max) {
-        return Math.min(Math.max(value, min), max);
-    }
-
-    // Framerate-independent exponential smoothing.
-    // tau = time constant in seconds; ~63% of the distance is covered
-    // per tau, ~95% per 3*tau. (A per-frame lerp of k at 60 Hz equals
-    // tau = -1/60 / ln(1 - k).)
-    function smooth(current, target, tau, dt) {
-        return current + (target - current) * (1 - Math.exp(-dt / tau));
-    }
-
-    // --------------------------------------------------------
-    // Shared ticker — a single rAF loop for every pointer effect.
-    // Subscribers receive dt (seconds, capped) and return true while
-    // they still need frames. The loop parks when nobody is hungry;
-    // wake() restarts it on the next input event.
-    // --------------------------------------------------------
-    var ticker = (function () {
-        var subscribers = [];
-        var rafId = null;
-        var last = 0;
-
-        function frame(now) {
-            rafId = null;
-            var dt = last ? Math.min((now - last) / 1000, 0.064) : 1 / 60;
-            last = now;
-
-            var hungry = false;
-            for (var i = 0; i < subscribers.length; i++) {
-                if (subscribers[i](dt)) {
-                    hungry = true;
-                }
-            }
-
-            if (hungry) {
-                rafId = requestAnimationFrame(frame);
-            } else {
-                last = 0;
-            }
-        }
-
-        return {
-            add: function (fn) {
-                subscribers.push(fn);
-            },
-            wake: function () {
-                if (rafId === null) {
-                    rafId = requestAnimationFrame(frame);
-                }
-            }
-        };
-    })();
+    var ticker = Fx.ticker;
+    var pointer = Fx.pointer;
+    var smooth = Fx.smooth;
+    var clamp = Fx.clamp;
+    var each = Fx.each;
+    var enablePointerFx = Fx.env.enablePointerFx;
+    var reduceMotion = Fx.env.reduceMotion;
 
     // --------------------------------------------------------
     // Scroll reveal (safe for every device / motion preference)
@@ -105,7 +50,7 @@
         }
 
         var targets = document.querySelectorAll(
-            '.products .card, .section-title, .section-prose, .cta-row'
+            '.products .card, .section-title, .section-prose, .cta-row, .inscription'
         );
         if (!targets.length) {
             return;
@@ -140,18 +85,13 @@
     }
 
     // --------------------------------------------------------
-    // Contextual cursor pill — antigravity.google style.
-    // Over a [data-cursor-pill] zone the native cursor is hidden and
-    // a floating pill (icon + label) takes over, centered on the
-    // pointer, trailing it with an eased lag.
-    //
-    // Tuned to mirror antigravity's GSAP rig:
+    // Contextual cursor pill — antigravity.google style, extended.
     //   follow   ≈ gsap.quickTo(duration 0.35, ease power2.out)
-    //   pop-in   ≈ back.out(1.7)  (CSS overshoot bezier, 0.34s)
-    //   pop-out  ≈ power2.in      (CSS ease-in, 0.2s)
-    // Their pill is absolutely positioned inside each section and is
-    // re-projected on scroll; ours is position:fixed, so scrolling
-    // only needs a bounds check to drop zones that move away.
+    //   pop-in   ≈ back.out(1.7)  (CSS overshoot bezier)
+    //   pop-out  ≈ power2.in      (CSS ease-in)
+    // Extensions: squash & stretch along the velocity vector,
+    // two ghost echoes, and a dwell-morph into an image preview
+    // for zones carrying data-cursor-preview.
     // --------------------------------------------------------
     function initCursorPill() {
         if (!enablePointerFx) {
@@ -167,41 +107,113 @@
         pill.className = 'cursor-pill';
         pill.setAttribute('aria-hidden', 'true');
         pill.innerHTML =
+            '<div class="cursor-pill-stretch">' +
             '<div class="cursor-pill-inner">' +
             '<i class="cursor-pill-icon"></i>' +
             '<span class="cursor-pill-label"></span>' +
+            '</div>' +
+            // Sibling of inner, NOT a child: the morph scales inner
+            // away, and the preview disc must survive that.
+            '<img class="cursor-pill-preview" alt="">' +
             '</div>';
         document.body.appendChild(pill);
 
+        var stretchEl = pill.querySelector('.cursor-pill-stretch');
         var iconEl = pill.querySelector('.cursor-pill-icon');
         var labelEl = pill.querySelector('.cursor-pill-label');
+        var previewEl = pill.querySelector('.cursor-pill-preview');
+
+        // Ghost echoes — blurred comets that lag behind the pill.
+        var trails = [0.18, 0.3].map(function (tau, i) {
+            var el = document.createElement('div');
+            el.className = 'cursor-trail cursor-trail-' + (i + 1);
+            el.setAttribute('aria-hidden', 'true');
+            document.body.appendChild(el);
+            return { el: el, tau: tau, x: 0, y: 0 };
+        });
 
         // Only hide native cursors inside zones once the pill is live.
         document.body.classList.add('cursor-pill-live');
 
         var FOLLOW_TAU = 0.09;
+        var STRETCH_TAU = 0.06;
+        var DWELL_MS = 450;
+
         var targetX = 0;
         var targetY = 0;
         var pillX = 0;
         var pillY = 0;
+        var prevX = 0;
+        var prevY = 0;
+        var stretch = 1;
+        var angle = 0;
         var activeZone = null;
+        var dwellTimer = null;
 
         ticker.add(function (dt) {
-            if (!activeZone) {
-                return false;
+            var moving = pointer.speed > 1 || activeZone;
+            if (!moving && stretch === 1) {
+                // Trails also need to settle before parking.
+                var trailBusy = false;
+                each(trails, function (t) {
+                    t.x = smooth(t.x, pointer.x, t.tau, dt);
+                    t.y = smooth(t.y, pointer.y, t.tau, dt);
+                    t.el.style.transform = 'translate3d(' + t.x.toFixed(1) + 'px,' + t.y.toFixed(1) + 'px,0)';
+                    if (Math.abs(pointer.x - t.x) > 1 || Math.abs(pointer.y - t.y) > 1) {
+                        trailBusy = true;
+                    }
+                });
+                var fade = parseFloat(trails[0].el.style.opacity || '0');
+                if (fade > 0.01) {
+                    each(trails, function (t) {
+                        t.el.style.opacity = '0';
+                    });
+                    trailBusy = true;
+                }
+                return trailBusy;
             }
-            pillX = smooth(pillX, targetX, FOLLOW_TAU, dt);
-            pillY = smooth(pillY, targetY, FOLLOW_TAU, dt);
+
+            // --- pill follow ---
+            if (activeZone) {
+                pillX = smooth(pillX, targetX, FOLLOW_TAU, dt);
+                pillY = smooth(pillY, targetY, FOLLOW_TAU, dt);
+                if (Math.abs(targetX - pillX) < 0.1 && Math.abs(targetY - pillY) < 0.1) {
+                    pillX = targetX;
+                    pillY = targetY;
+                }
+                pill.style.transform =
+                    'translate3d(' + pillX.toFixed(2) + 'px,' + pillY.toFixed(2) + 'px,0)';
+            }
+
+            // --- squash & stretch along the pill's own velocity ---
+            var vx = (pillX - prevX) / dt;
+            var vy = (pillY - prevY) / dt;
+            prevX = pillX;
+            prevY = pillY;
+            var speed = Math.sqrt(vx * vx + vy * vy);
+            var wantStretch = 1 + clamp(speed / 6000, 0, 0.16);
+            stretch = smooth(stretch, wantStretch, STRETCH_TAU, dt);
+            if (speed > 40) {
+                angle = Math.atan2(vy, vx);
+            }
+            var sy = 1 / Math.pow(stretch, 0.85);
+            stretchEl.style.transform =
+                'rotate(' + angle.toFixed(3) + 'rad) scale(' +
+                stretch.toFixed(3) + ',' + sy.toFixed(3) + ')';
+
+            // --- ghost trails: visible while the cursor moves fast ---
+            var trailAlpha = clamp((pointer.speed - 250) / 2500, 0, 1);
+            each(trails, function (t, i) {
+                t.x = smooth(t.x, pointer.x, t.tau, dt);
+                t.y = smooth(t.y, pointer.y, t.tau, dt);
+                t.el.style.transform = 'translate3d(' + t.x.toFixed(1) + 'px,' + t.y.toFixed(1) + 'px,0)';
+                t.el.style.opacity = (trailAlpha * (i === 0 ? 0.35 : 0.18)).toFixed(3);
+            });
 
             var settled =
-                Math.abs(targetX - pillX) < 0.1 &&
-                Math.abs(targetY - pillY) < 0.1;
-            if (settled) {
-                pillX = targetX;
-                pillY = targetY;
-            }
-            pill.style.transform =
-                'translate3d(' + pillX.toFixed(2) + 'px,' + pillY.toFixed(2) + 'px,0)';
+                (!activeZone || (Math.abs(targetX - pillX) < 0.1 && Math.abs(targetY - pillY) < 0.1)) &&
+                Math.abs(stretch - 1) < 0.004 &&
+                pointer.speed < 1;
             return !settled;
         });
 
@@ -212,8 +224,33 @@
             labelEl.textContent = zone.getAttribute('data-cursor-label') || '';
         }
 
+        function cancelDwell() {
+            if (dwellTimer) {
+                clearTimeout(dwellTimer);
+                dwellTimer = null;
+            }
+            pill.classList.remove('is-preview');
+        }
+
+        function startDwell(zone) {
+            cancelDwell();
+            var src = zone.getAttribute('data-cursor-preview');
+            if (!src) {
+                return;
+            }
+            dwellTimer = setTimeout(function () {
+                dwellTimer = null;
+                if (activeZone === zone) {
+                    previewEl.src = src;
+                    pill.classList.add('is-preview');
+                    Fx.sound.play('morph');
+                }
+            }, DWELL_MS);
+        }
+
         function deactivate() {
             activeZone = null;
+            cancelDwell();
             pill.classList.remove('is-active', 'is-press');
         }
 
@@ -225,16 +262,21 @@
             if (activeZone) {
                 // Direct zone-to-zone hop: swap content, stay visible.
                 activeZone = zone;
+                cancelDwell();
                 setZoneContent(zone);
+                startDwell(zone);
+                Fx.sound.play('swap');
                 return;
             }
             activeZone = zone;
             setZoneContent(zone);
             // Jump to the pointer instead of flying in from a stale spot.
-            targetX = pillX = e.clientX;
-            targetY = pillY = e.clientY;
+            targetX = pillX = prevX = e.clientX;
+            targetY = pillY = prevY = e.clientY;
             pill.style.transform = 'translate3d(' + pillX + 'px,' + pillY + 'px,0)';
             pill.classList.add('is-active');
+            startDwell(zone);
+            Fx.sound.play('pop');
             ticker.wake();
         });
 
@@ -250,20 +292,20 @@
                 return;
             }
             deactivate();
+            Fx.sound.play('popout');
         });
 
         window.addEventListener('pointermove', function (e) {
             targetX = e.clientX;
             targetY = e.clientY;
-            if (activeZone) {
-                ticker.wake();
-            }
+            ticker.wake();
         }, { passive: true });
 
         // Press feedback — the pill dips slightly while clicking.
         window.addEventListener('pointerdown', function () {
             if (activeZone) {
                 pill.classList.add('is-press');
+                Fx.sound.play('press');
             }
         }, { passive: true });
 
@@ -318,7 +360,7 @@
 
         // Time constants matched to the legacy per-frame lerps at 60 Hz
         // (spotlight 0.14, background 0.05, hero 0.08) so the feel is
-        // unchanged there — and finally correct on 120 Hz+ displays.
+        // unchanged there — and correct on 120 Hz+ displays.
         var SPOT_TAU = 0.11;
         var BG_TAU = 0.32;
         var HERO_TAU = 0.20;
@@ -398,7 +440,8 @@
     }
 
     // --------------------------------------------------------
-    // 3D card tilt with traveling glare
+    // 3D card tilt with traveling glare (border-light is pure CSS,
+    // driven by the same --glare-x/--glare-y variables)
     // --------------------------------------------------------
     function initCardTilt() {
         if (!enablePointerFx) {
@@ -469,11 +512,158 @@
         });
     }
 
-    onReady(function () {
+    // --------------------------------------------------------
+    // Click ripple — a brand-colored ring blooms from every click
+    // --------------------------------------------------------
+    function initRipple() {
+        if (!enablePointerFx) {
+            return;
+        }
+
+        var live = 0;
+
+        window.addEventListener('pointerdown', function (e) {
+            if (live > 6) {
+                return;
+            }
+            var ring = document.createElement('div');
+            ring.className = 'fx-ripple';
+            ring.style.left = e.clientX + 'px';
+            ring.style.top = e.clientY + 'px';
+            ring.setAttribute('aria-hidden', 'true');
+            document.body.appendChild(ring);
+            live++;
+            ring.addEventListener('animationend', function () {
+                ring.remove();
+                live--;
+            });
+        }, { passive: true });
+    }
+
+    // --------------------------------------------------------
+    // Sliding nav indicator — one glow pill glides between links
+    // --------------------------------------------------------
+    function initNavGlide() {
+        if (!enablePointerFx) {
+            return;
+        }
+
+        var list = document.querySelector('header nav ul');
+        if (!list) {
+            return;
+        }
+
+        var glide = document.createElement('span');
+        glide.className = 'nav-glide';
+        glide.setAttribute('aria-hidden', 'true');
+        list.appendChild(glide);
+
+        function moveTo(link) {
+            var lr = link.getBoundingClientRect();
+            var ur = list.getBoundingClientRect();
+            glide.style.width = lr.width + 16 + 'px';
+            glide.style.transform =
+                'translate3d(' + (lr.left - ur.left - 8).toFixed(1) + 'px,' +
+                (lr.top - ur.top - 6).toFixed(1) + 'px,0)';
+        }
+
+        each(list.querySelectorAll('li a'), function (link) {
+            link.addEventListener('pointerenter', function () {
+                moveTo(link);
+                glide.classList.add('is-on');
+                Fx.sound.play('glide');
+            });
+            link.addEventListener('focus', function () {
+                moveTo(link);
+                glide.classList.add('is-on');
+            });
+        });
+
+        list.addEventListener('pointerleave', function () {
+            glide.classList.remove('is-on');
+        });
+        list.addEventListener('focusout', function () {
+            glide.classList.remove('is-on');
+        });
+
+        // Keep the pill glued to its link while it glides in.
+        window.addEventListener('resize', function () {
+            glide.classList.remove('is-on');
+        }, { passive: true });
+    }
+
+    // --------------------------------------------------------
+    // Flashlight inscription — a hidden line of brand text that
+    // only exists where the cursor's light falls.
+    // --------------------------------------------------------
+    function initInscription() {
+        if (!enablePointerFx) {
+            return;
+        }
+
+        var line = document.querySelector('.inscription');
+        if (!line) {
+            return;
+        }
+
+        line.closest('section').addEventListener('pointermove', function (e) {
+            var r = line.getBoundingClientRect();
+            line.style.setProperty('--lx', (e.clientX - r.left).toFixed(1) + 'px');
+            line.style.setProperty('--ly', (e.clientY - r.top).toFixed(1) + 'px');
+        }, { passive: true });
+
+        line.closest('section').addEventListener('pointerleave', function () {
+            // Light leaves: the inscription sinks back into darkness.
+            line.style.setProperty('--ly', '-160px');
+        }, { passive: true });
+    }
+
+    // --------------------------------------------------------
+    // View Transitions — same-page anchors reveal through a circle
+    // expanding from the click point. Falls back to a plain jump.
+    // --------------------------------------------------------
+    function initViewTransitions() {
+        if (!enablePointerFx || !document.startViewTransition) {
+            return;
+        }
+
+        document.addEventListener('click', function (e) {
+            if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) {
+                return;
+            }
+            var link = e.target.closest ? e.target.closest('a[href^="#"]') : null;
+            if (!link) {
+                return;
+            }
+            var id = link.getAttribute('href');
+            var targetEl = id && id.length > 1 ? document.querySelector(id) : null;
+            if (!targetEl) {
+                return;
+            }
+
+            e.preventDefault();
+            document.documentElement.style.setProperty('--vt-x', e.clientX + 'px');
+            document.documentElement.style.setProperty('--vt-y', e.clientY + 'px');
+
+            document.startViewTransition(function () {
+                targetEl.scrollIntoView({ behavior: 'auto', block: 'start' });
+                if (history.pushState) {
+                    history.pushState(null, '', id);
+                }
+            });
+            Fx.sound.play('reveal');
+        });
+    }
+
+    Fx.onReady(function () {
         initReveal();
         initCursorPill();
         initPointerField();
         initCardTilt();
         initMagneticButtons();
+        initRipple();
+        initNavGlide();
+        initInscription();
+        initViewTransitions();
     });
 })();

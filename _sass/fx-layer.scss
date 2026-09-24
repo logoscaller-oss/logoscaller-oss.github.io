@@ -1,0 +1,406 @@
+// ============================================================
+// FX layer — the light-room: particle constellation, memory-of-
+// light veil, companion orb, shader aurora, pill extensions
+// (squash wrapper, image morph, ghost trails), click ripple,
+// sliding nav indicator, flashlight inscription, border-light
+// and View Transition reveals.
+// Depends on palette variables from premium-theme.scss.
+// ============================================================
+
+$fx-ease: cubic-bezier(0.22, 1, 0.36, 1);
+$fx-spring: cubic-bezier(0.34, 1.7, 0.64, 1);
+
+// ------------------------------------------------------------
+// Pill extensions
+// ------------------------------------------------------------
+
+// Squash & stretch wrapper — JS writes rotate+scale per frame;
+// the inner element keeps owning the pop and the centering.
+.cursor-pill-stretch {
+    will-change: transform;
+}
+
+// Dwell-morph: the pill cross-fades into a circular product peek.
+.cursor-pill-preview {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 96px;
+    height: 96px;
+    margin: -48px 0 0 -48px;
+    padding: 14px;
+    box-sizing: border-box;
+    object-fit: contain;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.14);
+    box-shadow:
+        0 10px 28px rgba(0, 0, 0, 0.45),
+        0 0 34px rgba($primary-color, 0.35);
+    opacity: 0;
+    transform: scale(0.3) rotate(-40deg);
+    transition: opacity 0.22s ease-in, transform 0.25s ease-in;
+}
+
+.cursor-pill.is-preview .cursor-pill-preview {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+    transition: opacity 0.25s ease-out, transform 0.45s $fx-spring;
+}
+
+.cursor-pill.is-preview .cursor-pill-inner {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+    transition: transform 0.22s ease-in, opacity 0.18s ease-in;
+}
+
+// Ghost trail — blurred comets lagging behind a fast cursor.
+.cursor-trail {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 26px;
+    height: 26px;
+    margin: -13px 0 0 -13px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    opacity: 0;
+    filter: blur(6px);
+    background: radial-gradient(circle,
+            rgba($primary-color, 0.9) 0%,
+            rgba($secondary-color, 0.35) 55%,
+            rgba(0, 0, 0, 0) 78%);
+    will-change: transform, opacity;
+}
+
+.cursor-trail-2 {
+    width: 18px;
+    height: 18px;
+    margin: -9px 0 0 -9px;
+    filter: blur(9px);
+}
+
+// ------------------------------------------------------------
+// Click ripple — a ring blooms from every press
+// ------------------------------------------------------------
+.fx-ripple {
+    position: fixed;
+    width: 12px;
+    height: 12px;
+    margin: -6px 0 0 -6px;
+    border-radius: 50%;
+    border: 2px solid rgba($secondary-color, 0.8);
+    box-shadow: 0 0 18px rgba($primary-color, 0.5);
+    pointer-events: none;
+    z-index: 9500;
+    animation: fx-ripple 0.6s $fx-ease forwards;
+}
+
+@keyframes fx-ripple {
+    from {
+        transform: scale(1);
+        opacity: 0.9;
+    }
+
+    to {
+        transform: scale(10);
+        opacity: 0;
+    }
+}
+
+// ------------------------------------------------------------
+// Sliding nav indicator — one glow pill glides between links
+// (replaces the former per-link underline)
+// ------------------------------------------------------------
+header nav ul {
+    position: relative;
+}
+
+header nav ul li a {
+    position: relative;
+    z-index: 1;
+}
+
+.nav-glide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 32px;
+    width: 0;
+    border-radius: 999px;
+    background: linear-gradient(90deg,
+            rgba($primary-color, 0.22),
+            rgba($secondary-color, 0.18));
+    border: 1px solid rgba($primary-color, 0.35);
+    box-shadow: 0 0 18px rgba($primary-color, 0.25);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.4s $fx-ease, width 0.4s $fx-ease, opacity 0.25s ease;
+    will-change: transform, width;
+}
+
+.nav-glide.is-on {
+    opacity: 1;
+}
+
+// ------------------------------------------------------------
+// Card border-light — a 1px edge glow tracking the cursor
+// (reuses the --glare-x/--glare-y variables written by the tilt)
+// ------------------------------------------------------------
+.products .card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: radial-gradient(240px circle at var(--glare-x, 50%) var(--glare-y, 50%),
+            rgba($primary-color, 0.7) 0%,
+            rgba($secondary-color, 0.3) 45%,
+            rgba(0, 0, 0, 0) 72%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.45s ease;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.products .card:hover::before,
+.products .card.tilt::before {
+    opacity: 1;
+}
+
+// ------------------------------------------------------------
+// Particle constellation canvas (behind content, above aurora)
+// ------------------------------------------------------------
+.fx-particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    pointer-events: none;
+}
+
+// ------------------------------------------------------------
+// Shader aurora — replaces the DOM blobs when WebGL is live
+// ------------------------------------------------------------
+.fx-fluid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+body.fluid-bg-on .aurora-blob {
+    display: none;
+}
+
+// ------------------------------------------------------------
+// Memory of light — the candle veil over the whole document.
+// JS sizes it to scrollHeight; it sits above the chrome (header
+// z-1000) but far below the pill / orb / controls.
+// ------------------------------------------------------------
+.fx-veil {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1200;
+    pointer-events: none;
+}
+
+// ------------------------------------------------------------
+// Companion orb — the light-spirit
+// ------------------------------------------------------------
+.fx-orb {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9000;
+    pointer-events: none;
+    will-change: transform, opacity;
+}
+
+.fx-orb-halo {
+    position: absolute;
+    top: -14px;
+    left: -14px;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+            rgba($secondary-color, 0.5) 0%,
+            rgba($primary-color, 0.25) 45%,
+            rgba(0, 0, 0, 0) 72%);
+    filter: blur(6px);
+    animation: orb-breathe 2.6s ease-in-out infinite;
+}
+
+.fx-orb-core {
+    position: absolute;
+    top: -7px;
+    left: -7px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%,
+            #ffffff 0%,
+            $secondary-color 55%,
+            $primary-color 100%);
+    box-shadow: 0 0 12px rgba($secondary-color, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fx-orb-pupil {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: rgba(10, 10, 10, 0.85);
+    will-change: transform;
+}
+
+.fx-orb-say {
+    position: absolute;
+    top: -16px;
+    left: 20px;
+    // The orb box is zero-width, so shrink-to-fit would collapse CJK
+    // text to one character per line; size from the content instead.
+    width: max-content;
+    max-width: 250px;
+    padding: 8px 12px;
+    border-radius: 12px;
+    background: rgba(20, 20, 28, 0.85);
+    border: 1px solid rgba($secondary-color, 0.35);
+    backdrop-filter: blur(8px);
+    color: #e8e8f0;
+    font-size: 12.5px;
+    line-height: 1.5;
+    opacity: 0;
+    transform: translateY(6px) scale(0.9);
+    transform-origin: left center;
+    transition: opacity 0.25s ease, transform 0.3s $fx-spring;
+}
+
+.fx-orb-say.is-on {
+    opacity: 1;
+    transform: none;
+}
+
+@keyframes orb-breathe {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+
+    50% {
+        transform: scale(1.25);
+        opacity: 1;
+    }
+}
+
+// ------------------------------------------------------------
+// Sound toggle — fixed bottom-right, glass coin
+// ------------------------------------------------------------
+.fx-sound-toggle {
+    position: fixed;
+    right: 22px;
+    bottom: 22px;
+    z-index: 9600;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid $glass-border;
+    background: $glass-bg;
+    backdrop-filter: blur(12px);
+    color: $text-muted;
+    cursor: pointer;
+    transition: color 0.3s ease, border-color 0.3s ease,
+        transform 0.3s $fx-ease, box-shadow 0.3s ease;
+}
+
+.fx-sound-toggle:hover {
+    color: #ffffff;
+    transform: translateY(-2px) scale(1.06);
+}
+
+.fx-sound-toggle.is-on {
+    color: $secondary-color;
+    border-color: rgba($secondary-color, 0.5);
+    box-shadow: 0 0 18px rgba($secondary-color, 0.3);
+}
+
+// ------------------------------------------------------------
+// Flashlight inscription — brand text that only exists inside
+// the cursor's light. Without JS the mask parks off-element, so
+// the line stays hidden; reduced-motion shows it plainly.
+// ------------------------------------------------------------
+.inscription {
+    margin-top: 42px;
+    font-size: 1.35rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: #ffffff;
+    text-shadow: 0 0 24px rgba($secondary-color, 0.6);
+    -webkit-mask-image: radial-gradient(220px circle at var(--lx, 50%) var(--ly, -160px),
+            #000 0%,
+            rgba(0, 0, 0, 0.75) 45%,
+            rgba(0, 0, 0, 0) 72%);
+    mask-image: radial-gradient(220px circle at var(--lx, 50%) var(--ly, -160px),
+            #000 0%,
+            rgba(0, 0, 0, 0.75) 45%,
+            rgba(0, 0, 0, 0) 72%);
+}
+
+// ------------------------------------------------------------
+// View Transitions — circular reveal from the click point
+// ------------------------------------------------------------
+::view-transition-old(root) {
+    animation: none;
+}
+
+::view-transition-new(root) {
+    animation: vt-circle 0.55s $fx-ease;
+}
+
+@keyframes vt-circle {
+    from {
+        clip-path: circle(0px at var(--vt-x, 50%) var(--vt-y, 50%));
+    }
+
+    to {
+        clip-path: circle(141vmax at var(--vt-x, 50%) var(--vt-y, 50%));
+    }
+}
+
+// ------------------------------------------------------------
+// Reduced motion — the room stays fully lit and silent
+// ------------------------------------------------------------
+@media (prefers-reduced-motion: reduce) {
+    .fx-veil,
+    .fx-particles,
+    .fx-orb,
+    .cursor-trail,
+    .fx-ripple {
+        display: none;
+    }
+
+    .inscription {
+        -webkit-mask-image: none;
+        mask-image: none;
+        color: $text-muted;
+        text-shadow: none;
+    }
+
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+        animation: none;
+    }
+}
