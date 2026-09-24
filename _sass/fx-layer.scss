@@ -1,9 +1,8 @@
 // ============================================================
-// FX layer — the light-room: particle constellation, memory-of-
-// light veil, companion orb, shader aurora, pill extensions
-// (squash wrapper, image morph, ghost trails), click ripple,
-// sliding nav indicator, flashlight inscription, border-light
-// and View Transition reveals.
+// FX layer — the light-room: diffraction starfield, memory-of-
+// light veil, shader aurora, pill extensions (squash wrapper,
+// image morph, ghost trails), sliding nav indicator, flashlight
+// inscription, border-light and View Transition reveals.
 // Depends on palette variables from premium-theme.scss.
 // ============================================================
 
@@ -79,34 +78,6 @@ $fx-spring: cubic-bezier(0.34, 1.7, 0.64, 1);
     height: 18px;
     margin: -9px 0 0 -9px;
     filter: blur(9px);
-}
-
-// ------------------------------------------------------------
-// Click ripple — a ring blooms from every press
-// ------------------------------------------------------------
-.fx-ripple {
-    position: fixed;
-    width: 12px;
-    height: 12px;
-    margin: -6px 0 0 -6px;
-    border-radius: 50%;
-    border: 2px solid rgba($secondary-color, 0.8);
-    box-shadow: 0 0 18px rgba($primary-color, 0.5);
-    pointer-events: none;
-    z-index: 9500;
-    animation: fx-ripple 0.6s $fx-ease forwards;
-}
-
-@keyframes fx-ripple {
-    from {
-        transform: scale(1);
-        opacity: 0.9;
-    }
-
-    to {
-        transform: scale(10);
-        opacity: 0;
-    }
 }
 
 // ------------------------------------------------------------
@@ -202,7 +173,7 @@ body.fluid-bg-on .aurora-blob {
 // ------------------------------------------------------------
 // Memory of light — the candle veil over the whole document.
 // JS sizes it to scrollHeight; it sits above the chrome (header
-// z-1000) but far below the pill / orb / controls.
+// z-1000) but far below the pill and the controls.
 // ------------------------------------------------------------
 .fx-veil {
     position: absolute;
@@ -211,99 +182,6 @@ body.fluid-bg-on .aurora-blob {
     width: 100%;
     z-index: 1200;
     pointer-events: none;
-}
-
-// ------------------------------------------------------------
-// Companion orb — the light-spirit
-// ------------------------------------------------------------
-.fx-orb {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 9000;
-    pointer-events: none;
-    will-change: transform, opacity;
-}
-
-.fx-orb-halo {
-    position: absolute;
-    top: -14px;
-    left: -14px;
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    background: radial-gradient(circle,
-            rgba($secondary-color, 0.5) 0%,
-            rgba($primary-color, 0.25) 45%,
-            rgba(0, 0, 0, 0) 72%);
-    filter: blur(6px);
-    animation: orb-breathe 2.6s ease-in-out infinite;
-}
-
-.fx-orb-core {
-    position: absolute;
-    top: -7px;
-    left: -7px;
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 35% 30%,
-            #ffffff 0%,
-            $secondary-color 55%,
-            $primary-color 100%);
-    box-shadow: 0 0 12px rgba($secondary-color, 0.8);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.fx-orb-pupil {
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: rgba(10, 10, 10, 0.85);
-    will-change: transform;
-}
-
-.fx-orb-say {
-    position: absolute;
-    top: -16px;
-    left: 20px;
-    // The orb box is zero-width, so shrink-to-fit would collapse CJK
-    // text to one character per line; size from the content instead.
-    width: max-content;
-    max-width: 250px;
-    padding: 8px 12px;
-    border-radius: 12px;
-    background: rgba(20, 20, 28, 0.85);
-    border: 1px solid rgba($secondary-color, 0.35);
-    backdrop-filter: blur(8px);
-    color: #e8e8f0;
-    font-size: 12.5px;
-    line-height: 1.5;
-    opacity: 0;
-    transform: translateY(6px) scale(0.9);
-    transform-origin: left center;
-    transition: opacity 0.25s ease, transform 0.3s $fx-spring;
-}
-
-.fx-orb-say.is-on {
-    opacity: 1;
-    transform: none;
-}
-
-@keyframes orb-breathe {
-
-    0%,
-    100% {
-        transform: scale(1);
-        opacity: 0.8;
-    }
-
-    50% {
-        transform: scale(1.25);
-        opacity: 1;
-    }
 }
 
 // ------------------------------------------------------------
@@ -386,9 +264,7 @@ body.fluid-bg-on .aurora-blob {
 @media (prefers-reduced-motion: reduce) {
     .fx-veil,
     .fx-particles,
-    .fx-orb,
-    .cursor-trail,
-    .fx-ripple {
+    .cursor-trail {
         display: none;
     }
 

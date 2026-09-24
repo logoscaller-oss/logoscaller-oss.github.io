@@ -14,7 +14,6 @@
  *  - Pointer parallax on the aurora background and hero content
  *  - 3D tilt + traveling glare + edge border-light on product cards
  *  - Magnetic buttons
- *  - Click ripple rings
  *  - Sliding nav indicator (one gliding pill across the links)
  *  - Flashlight inscription (hidden line revealed by the cursor)
  *  - View Transitions circular reveal for same-page anchors
@@ -513,34 +512,6 @@
     }
 
     // --------------------------------------------------------
-    // Click ripple — a brand-colored ring blooms from every click
-    // --------------------------------------------------------
-    function initRipple() {
-        if (!enablePointerFx) {
-            return;
-        }
-
-        var live = 0;
-
-        window.addEventListener('pointerdown', function (e) {
-            if (live > 6) {
-                return;
-            }
-            var ring = document.createElement('div');
-            ring.className = 'fx-ripple';
-            ring.style.left = e.clientX + 'px';
-            ring.style.top = e.clientY + 'px';
-            ring.setAttribute('aria-hidden', 'true');
-            document.body.appendChild(ring);
-            live++;
-            ring.addEventListener('animationend', function () {
-                ring.remove();
-                live--;
-            });
-        }, { passive: true });
-    }
-
-    // --------------------------------------------------------
     // Sliding nav indicator — one glow pill glides between links
     // --------------------------------------------------------
     function initNavGlide() {
@@ -661,7 +632,6 @@
         initPointerField();
         initCardTilt();
         initMagneticButtons();
-        initRipple();
         initNavGlide();
         initInscription();
         initViewTransitions();

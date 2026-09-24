@@ -5,18 +5,14 @@
  *  - Starfield: twinkling four-point stars with depth parallax,
  *    displaced by the cursor's ring (after antigravity.google's
  *    main particle field) plus our own eddy swirl; stars the candle
- *    passes ignite warm, and fast flicks launch shooting stars.
+ *    passes flare warm, and fast flicks launch shooting stars. Light
+ *    is painted the way optics paint a point source — diffraction
+ *    spikes and an anamorphic streak around a tiny Airy core, never
+ *    a round blob.
  *  - Memory of light ("烛照台" narrative): the page rests under a
  *    soft veil of darkness; the cursor is a candle that burns holes
  *    in it, and every place it has lit STAYS lit — persisted in
  *    localStorage, so returning visitors see where they explored.
- *  - Companion orb: a small light-spirit that springs behind the
- *    cursor, watches it, and whispers one line about whatever zone
- *    you hover. Lines come from data-orb-line attributes, or from
- *    window.LOGOS_ORACLE_ENDPOINT (?zone=…) when a backend bridge
- *    (e.g. a SparkPool MCP gateway) is configured — the static site
- *    ships with local lines and treats the endpoint as an optional
- *    progressive enhancement.
  *
  * Degradation: touch / reduced-motion / no-JS get none of this; the
  * veil in particular never exists without JS, so content is never
@@ -32,7 +28,6 @@
 
     var ticker = Fx.ticker;
     var pointer = Fx.pointer;
-    var smooth = Fx.smooth;
     var clamp = Fx.clamp;
     var enablePointerFx = Fx.env.enablePointerFx;
 
@@ -65,10 +60,16 @@
         var stars = [];
         var shots = [];              // shooting stars born from fast flicks
 
-        // Cool starlight — and the warm gold a star turns when the
-        // candle (the cursor) catches it.
-        var COLORS = ['255,255,255', '0,199,190', '94,92,230', '255,255,255'];
-        var WARM = '255,214,150';
+        // Cool starlight — and the candle gold a star turns when the
+        // cursor catches it. Kept as [r,g,b] so ignition can mix.
+        var COLORS = [[255, 255, 255], [0, 199, 190], [94, 92, 230], [255, 255, 255]];
+        var WARM = [255, 214, 150];
+
+        function mixc(a, b, t) {
+            return ((a[0] + (b[0] - a[0]) * t) | 0) + ',' +
+                ((a[1] + (b[1] - a[1]) * t) | 0) + ',' +
+                ((a[2] + (b[2] - a[2]) * t) | 0);
+        }
 
         // Ring interaction, after antigravity.google's main particle
         // field: the cursor is an annulus that displaces the dust
@@ -84,6 +85,7 @@
 
         var t = 0;
         var shotCool = 0;
+        var fastFor = 0;
 
         function makeStar() {
             var z = 0.25 + Math.random() * 0.75;   // depth: 0 far, 1 near
@@ -141,6 +143,28 @@
             ctx.fill();
         }
 
+        // A tapered light spike: brightest at the star, fading to
+        // nothing at both ends — how diffraction actually paints a
+        // point source. Round halos read as bokeh balls; spikes and
+        // streaks read as starlight.
+        function spike(x, y, len, wid, ang, alpha, rgb) {
+            if (alpha <= 0.004 || len <= 0.5) {
+                return;
+            }
+            var dx = Math.cos(ang) * len;
+            var dy = Math.sin(ang) * len;
+            var g = ctx.createLinearGradient(x - dx, y - dy, x + dx, y + dy);
+            g.addColorStop(0, 'rgba(' + rgb + ',0)');
+            g.addColorStop(0.5, 'rgba(' + rgb + ',' + Math.min(1, alpha).toFixed(3) + ')');
+            g.addColorStop(1, 'rgba(' + rgb + ',0)');
+            ctx.strokeStyle = g;
+            ctx.lineWidth = wid;
+            ctx.beginPath();
+            ctx.moveTo(x - dx, y - dy);
+            ctx.lineTo(x + dx, y + dy);
+            ctx.stroke();
+        }
+
         ticker.add(function (dt) {
             if (document.hidden) {
                 return false;
@@ -156,8 +180,12 @@
             var pvy = pointer.vy;
 
             // A fast flick launches a shooting star (max two aloft).
+            // The speed must hold for a couple of frames, so a single
+            // velocity spike can never fake a flick.
+            fastFor = pointer.speed > FLICK_SPEED ? fastFor + dt : 0;
             shotCool -= dt;
-            if (pointer.speed > FLICK_SPEED && shotCool <= 0 && shots.length < 2) {
+            if (fastFor > 0.045 && shotCool <= 0 && shots.length < 2) {
+                fastFor = 0;
                 shotCool = 2.5;
                 var sl = Math.sqrt(pvx * pvx + pvy * pvy) || 1;
                 shots.push({
@@ -207,25 +235,37 @@
                 st.dx += st.vx * dt;
                 st.dy += st.vy * dt;
 
-                // Twinkle, and the flare while ignited.
+                // Twinkle, with a fast scintillation shimmer on top.
                 var tw = 0.55 + 0.45 * Math.sin(st.phase + t * st.tws);
+                tw *= 0.86 + 0.14 * Math.sin(t * 7.3 + st.phase * 3.1);
                 var lit = st.lit;
                 var alpha = Math.min(1,
-                    (0.28 + 0.5 * tw) * (0.35 + 0.65 * st.z) + lit * 0.55);
-                var size = st.s * (0.8 + 0.35 * tw + lit * 1.1);
+                    (0.28 + 0.5 * tw) * (0.35 + 0.65 * st.z) + lit * 0.5);
+                var size = st.s * (0.8 + 0.35 * tw + lit * 0.8);
+                var col = lit > 0.02 ? mixc(st.c, WARM, lit) : st.c.join(',');
+                var rot = st.rot + lit * 0.7;
 
-                if (lit > 0.06) {
-                    // Warm halo while the candlelight holds it.
-                    var g = ctx.createRadialGradient(sx, sy, 0, sx, sy, size * 6);
-                    g.addColorStop(0, 'rgba(' + WARM + ',' + (lit * 0.5).toFixed(3) + ')');
-                    g.addColorStop(1, 'rgba(' + WARM + ',0)');
-                    ctx.fillStyle = g;
-                    ctx.beginPath();
-                    ctx.arc(sx, sy, size * 6, 0, 6.2832);
-                    ctx.fill();
-                }
+                // Diffraction cross: the candle makes the spikes grow
+                // and slide warm — a flare, not a ball.
+                var len = size * (2.1 + 1.7 * tw + lit * 3.2);
+                spike(sx, sy, len, Math.max(0.7, size * 0.16), rot, alpha * 0.5, col);
+                spike(sx, sy, len * 0.8, Math.max(0.7, size * 0.14), rot + 1.5708, alpha * 0.38, col);
+                // Anamorphic smear: glass stretches light sideways.
+                spike(sx, sy, len * 1.9, size * 0.5, 0, alpha * (0.1 + lit * 0.16), col);
 
-                sparkle(sx, sy, size, st.rot + lit * 0.7, alpha, st.c);
+                // Tiny Airy core bloom — the only round part, kept to
+                // a few pixels so it reads as heat, not bokeh.
+                var cr = size * 1.7;
+                var g = ctx.createRadialGradient(sx, sy, 0, sx, sy, cr);
+                g.addColorStop(0, 'rgba(255,255,255,' + (alpha * 0.5).toFixed(3) + ')');
+                g.addColorStop(0.4, 'rgba(' + col + ',' + (alpha * 0.22).toFixed(3) + ')');
+                g.addColorStop(1, 'rgba(' + col + ',0)');
+                ctx.fillStyle = g;
+                ctx.beginPath();
+                ctx.arc(sx, sy, cr, 0, 6.2832);
+                ctx.fill();
+
+                sparkle(sx, sy, size, rot, alpha, col);
                 ctx.fillStyle = 'rgba(255,255,255,' + (alpha * 0.9).toFixed(3) + ')';
                 ctx.beginPath();
                 ctx.arc(sx, sy, Math.max(0.4, size * 0.28), 0, 6.2832);
@@ -432,165 +472,9 @@
         });
     }
 
-    // ========================================================
-    // Companion orb — the light-spirit
-    // ========================================================
-    function initOrb() {
-        if (!enablePointerFx) {
-            return;
-        }
-
-        var ZONE = '[data-orb-line]';
-
-        var orb = document.createElement('div');
-        orb.className = 'fx-orb';
-        orb.setAttribute('aria-hidden', 'true');
-        orb.innerHTML =
-            '<div class="fx-orb-halo"></div>' +
-            '<div class="fx-orb-core"><span class="fx-orb-pupil"></span></div>' +
-            '<div class="fx-orb-say"></div>';
-        document.body.appendChild(orb);
-
-        var pupil = orb.querySelector('.fx-orb-pupil');
-        var say = orb.querySelector('.fx-orb-say');
-
-        var x = pointer.x - 90;
-        var y = pointer.y + 60;
-        var bobT = Math.random() * 10;
-        var shy = 0;              // 0 = curious, 1 = backs off while the pill works
-        var typeTimer = null;
-
-        function speak(text) {
-            clearInterval(typeTimer);
-            say.textContent = '';
-            say.classList.add('is-on');
-            var i = 0;
-            typeTimer = setInterval(function () {
-                i++;
-                say.textContent = text.slice(0, i);
-                if (i >= text.length) {
-                    clearInterval(typeTimer);
-                }
-            }, 26);
-        }
-
-        function hush() {
-            clearInterval(typeTimer);
-            say.classList.remove('is-on');
-        }
-
-        // Optional backend bridge (e.g. a SparkPool MCP gateway):
-        // window.LOGOS_ORACLE_ENDPOINT = 'https://…/oracle'
-        // GET ?zone=<id-or-label> → { "line": "…" } with local fallback.
-        function lineFor(zone) {
-            var local = zone.getAttribute('data-orb-line') || '';
-            var endpoint = window.LOGOS_ORACLE_ENDPOINT;
-            if (!endpoint) {
-                return Promise.resolve(local);
-            }
-            var key = zone.id || zone.getAttribute('data-cursor-label') || '';
-            var ctrl = typeof AbortController === 'function' ? new AbortController() : null;
-            var timeout = setTimeout(function () {
-                if (ctrl) { ctrl.abort(); }
-            }, 1500);
-            return fetch(endpoint + '?zone=' + encodeURIComponent(key), { signal: ctrl && ctrl.signal })
-                .then(function (r) { return r.ok ? r.json() : null; })
-                .then(function (j) { return (j && j.line) || local; })
-                .catch(function () { return local; })
-                .then(function (line) { clearTimeout(timeout); return line; });
-        }
-
-        var curZone = null;
-
-        document.addEventListener('pointerover', function (e) {
-            var zone = e.target && e.target.closest ? e.target.closest(ZONE) : null;
-            // Crossing children inside one zone must not restart the line.
-            if (!zone || zone === curZone) {
-                return;
-            }
-            curZone = zone;
-            shy = 1;
-            lineFor(zone).then(function (line) {
-                if (line && curZone === zone) { speak(line); }
-            });
-        });
-
-        document.addEventListener('pointerout', function (e) {
-            // Only react when actually leaving a zone — pointerout fires
-            // for every element boundary the cursor crosses.
-            var from = e.target && e.target.closest ? e.target.closest(ZONE) : null;
-            if (!from) {
-                return;
-            }
-            var to = e.relatedTarget;
-            if (to && to.closest && to.closest(ZONE)) {
-                return;
-            }
-            curZone = null;
-            shy = 0;
-            hush();
-        });
-
-        // One greeting per session, teaching the light metaphor.
-        var greeted = false;
-        try {
-            greeted = sessionStorage.getItem('logos-orb-greeted') === '1';
-        } catch (err) { /* ignore */ }
-        if (!greeted) {
-            setTimeout(function () {
-                speak('嗨，我是光灵 ✦ 移动光标，点亮这个房间。');
-                setTimeout(hush, 5200);
-                try {
-                    sessionStorage.setItem('logos-orb-greeted', '1');
-                } catch (err) { /* ignore */ }
-            }, 1400);
-        }
-
-        var ORB_TAU = 0.42;
-
-        ticker.add(function (dt) {
-            if (document.hidden) {
-                return false;
-            }
-            bobT += dt;
-
-            // Shy offset: while the pill is working a zone, the orb
-            // hangs back so the two never fight for attention.
-            var shyTarget = shy ? 1 : 0;
-            var shyNow = smooth(parseFloat(orb.dataset.shy || '0'), shyTarget, 0.25, dt);
-            orb.dataset.shy = shyNow.toFixed(3);
-
-            var offX = -70 - shyNow * 40;
-            var offY = 55 + shyNow * 30;
-
-            x = smooth(x, pointer.x + offX, ORB_TAU, dt);
-            y = smooth(y, pointer.y + offY, ORB_TAU, dt);
-
-            var bob = Math.sin(bobT * 1.6) * 6;
-            orb.style.transform =
-                'translate3d(' + x.toFixed(1) + 'px,' + (y + bob).toFixed(1) + 'px,0)';
-            orb.style.opacity = (0.95 - shyNow * 0.55).toFixed(2);
-
-            // The spirit watches your cursor.
-            var dx = clamp((pointer.x - x) / 60, -1, 1);
-            var dy = clamp((pointer.y - y) / 60, -1, 1);
-            pupil.style.transform =
-                'translate3d(' + (dx * 3).toFixed(1) + 'px,' + (dy * 3).toFixed(1) + 'px,0)';
-
-            return true; // ambient personality: stays alive while visible
-        });
-
-        document.addEventListener('visibilitychange', function () {
-            if (!document.hidden) {
-                ticker.wake();
-            }
-        });
-    }
-
     Fx.onReady(function () {
         initParticles();
         initLightMemory();
-        initOrb();
         // Ambient subscribers are hungry from birth: start the loop
         // even if no pointer event ever arrives (e.g. a kiosk page).
         ticker.wake();

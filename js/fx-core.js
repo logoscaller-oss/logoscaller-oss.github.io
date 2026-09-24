@@ -73,11 +73,16 @@
 
         window.addEventListener('pointermove', function (e) {
             var now = performance.now();
-            var dt = lastT ? Math.min((now - lastT) / 1000, 0.1) : 1 / 60;
+            var gap = lastT ? (now - lastT) / 1000 : Infinity;
+            var dt = Math.min(gap, 0.1);
             lastT = now;
 
-            var ivx = (e.clientX - lastX) / dt;
-            var ivy = (e.clientY - lastY) / dt;
+            // A long gap means the cursor teleported (first move after
+            // load, re-entry from another screen, a pause): a jump is
+            // not motion, so it must not register as velocity.
+            var jump = gap > 0.25;
+            var ivx = jump ? 0 : (e.clientX - lastX) / dt;
+            var ivy = jump ? 0 : (e.clientY - lastY) / dt;
             lastX = e.clientX;
             lastY = e.clientY;
 
