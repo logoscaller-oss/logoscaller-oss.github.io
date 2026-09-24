@@ -2,8 +2,10 @@
  * ambient.js
  * Room-scale light effects, built on window.LogosFx.
  *
- *  - Particle constellation: a brand-colored starfield that drifts,
- *    links nearby nodes, and parts around the cursor.
+ *  - Starfield: twinkling four-point stars with depth parallax,
+ *    displaced by the cursor's ring (after antigravity.google's
+ *    main particle field) plus our own eddy swirl; stars the candle
+ *    passes ignite warm, and fast flicks launch shooting stars.
  *  - Memory of light ("烛照台" narrative): the page rests under a
  *    soft veil of darkness; the cursor is a candle that burns holes
  *    in it, and every place it has lit STAYS lit — persisted in
@@ -35,7 +37,7 @@
     var enablePointerFx = Fx.env.enablePointerFx;
 
     // ========================================================
-    // Particle constellation
+    // Starfield — antigravity-style ring displacement, on stars
     // ========================================================
     function initParticles() {
         if (!enablePointerFx) {
@@ -60,12 +62,44 @@
         var DPR = Math.min(window.devicePixelRatio || 1, 1.5);
         var W = 0;
         var H = 0;
-        var nodes = [];
+        var stars = [];
+        var shots = [];              // shooting stars born from fast flicks
 
-        var COLORS = ['94,92,230', '0,199,190', '255,255,255'];
-        var LINK_DIST = 110;
-        var CURSOR_DIST = 160;
-        var REPEL_DIST = 140;
+        // Cool starlight — and the warm gold a star turns when the
+        // candle (the cursor) catches it.
+        var COLORS = ['255,255,255', '0,199,190', '94,92,230', '255,255,255'];
+        var WARM = '255,214,150';
+
+        // Ring interaction, after antigravity.google's main particle
+        // field: the cursor is an annulus that displaces the dust
+        // inside it; springs pull every star back home afterwards.
+        var RING_R = 150;
+        var RING_PUSH = 260;
+        var RING_SWIRL = 110;        // our twist: a tangential eddy
+        var SPRING_K = 26;
+        var SPRING_C = 6.5;
+        var WAKE = 1.6;              // momentum handed over by a fast cursor
+        var PARALLAX = 0.02;         // depth lean away from the pointer
+        var FLICK_SPEED = 2600;
+
+        var t = 0;
+        var shotCool = 0;
+
+        function makeStar() {
+            var z = 0.25 + Math.random() * 0.75;   // depth: 0 far, 1 near
+            return {
+                hx: Math.random() * W,
+                hy: Math.random() * H,
+                z: z,
+                s: (0.7 + z * 1.9) * (0.7 + Math.random() * 0.6),
+                phase: Math.random() * 6.2832,
+                tws: 0.6 + Math.random() * 1.4,    // twinkle speed
+                rot: Math.random() * 6.2832,
+                c: COLORS[(Math.random() * COLORS.length) | 0],
+                dx: 0, dy: 0, vx: 0, vy: 0,        // displacement spring
+                lit: 0                             // candle ignition 0..1
+            };
+        }
 
         function resize() {
             W = window.innerWidth;
@@ -76,93 +110,154 @@
             canvas.style.height = H + 'px';
             ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
 
-            var want = clamp(Math.round(W * H / 16000), 40, 130);
-            while (nodes.length < want) {
-                nodes.push({
-                    x: Math.random() * W,
-                    y: Math.random() * H,
-                    vx: (Math.random() - 0.5) * 24,
-                    vy: (Math.random() - 0.5) * 24,
-                    r: 1 + Math.random() * 1.4,
-                    c: COLORS[(Math.random() * COLORS.length) | 0]
-                });
+            var want = clamp(Math.round(W * H / 11000), 50, 160);
+            while (stars.length < want) {
+                stars.push(makeStar());
             }
-            nodes.length = want;
+            stars.length = want;
         }
 
         resize();
         window.addEventListener('resize', resize, { passive: true });
 
+        // Four-point sparkle: tips on the axes, waist between them.
+        function sparkle(x, y, s, rot, alpha, rgb) {
+            var w = s * 0.3;
+            ctx.beginPath();
+            for (var k = 0; k < 4; k++) {
+                var a = rot + k * 1.5708;
+                var b = a + 0.7854;
+                var tx = x + Math.cos(a) * s;
+                var ty = y + Math.sin(a) * s;
+                if (k === 0) {
+                    ctx.moveTo(tx, ty);
+                } else {
+                    ctx.lineTo(tx, ty);
+                }
+                ctx.lineTo(x + Math.cos(b) * w, y + Math.sin(b) * w);
+            }
+            ctx.closePath();
+            ctx.fillStyle = 'rgba(' + rgb + ',' + alpha.toFixed(3) + ')';
+            ctx.fill();
+        }
+
         ticker.add(function (dt) {
             if (document.hidden) {
                 return false;
             }
+            t += dt;
 
             ctx.clearRect(0, 0, W, H);
+            ctx.globalCompositeOperation = 'lighter';
 
-            var i, j, n, m;
-            for (i = 0; i < nodes.length; i++) {
-                n = nodes[i];
+            var px = pointer.x;
+            var py = pointer.y;
+            var pvx = pointer.vx;
+            var pvy = pointer.vy;
 
-                // Cursor repulsion — the light pushes the dust aside.
-                var dx = n.x - pointer.x;
-                var dy = n.y - pointer.y;
-                var d = Math.sqrt(dx * dx + dy * dy);
-                if (d < REPEL_DIST && d > 0.001) {
-                    var f = (1 - d / REPEL_DIST) * 260 * dt;
-                    n.vx += (dx / d) * f;
-                    n.vy += (dy / d) * f;
-                }
-
-                // Gentle drag back to drift speed.
-                n.vx = smooth(n.vx, clamp(n.vx, -34, 34), 0.5, dt);
-                n.vy = smooth(n.vy, clamp(n.vy, -34, 34), 0.5, dt);
-
-                n.x += n.vx * dt;
-                n.y += n.vy * dt;
-                if (n.x < -10) { n.x = W + 10; } else if (n.x > W + 10) { n.x = -10; }
-                if (n.y < -10) { n.y = H + 10; } else if (n.y > H + 10) { n.y = -10; }
+            // A fast flick launches a shooting star (max two aloft).
+            shotCool -= dt;
+            if (pointer.speed > FLICK_SPEED && shotCool <= 0 && shots.length < 2) {
+                shotCool = 2.5;
+                var sl = Math.sqrt(pvx * pvx + pvy * pvy) || 1;
+                shots.push({
+                    x: px,
+                    y: py,
+                    vx: (pvx / sl) * (900 + Math.random() * 400),
+                    vy: (pvy / sl) * (900 + Math.random() * 400),
+                    life: 0.9
+                });
             }
 
-            // Node-to-node links.
-            ctx.lineWidth = 1;
-            for (i = 0; i < nodes.length; i++) {
-                n = nodes[i];
-                for (j = i + 1; j < nodes.length; j++) {
-                    m = nodes[j];
-                    var lx = n.x - m.x;
-                    var ly = n.y - m.y;
-                    var ld = Math.sqrt(lx * lx + ly * ly);
-                    if (ld < LINK_DIST) {
-                        ctx.strokeStyle = 'rgba(' + n.c + ',' + ((1 - ld / LINK_DIST) * 0.22).toFixed(3) + ')';
-                        ctx.beginPath();
-                        ctx.moveTo(n.x, n.y);
-                        ctx.lineTo(m.x, m.y);
-                        ctx.stroke();
+            var i, st;
+            for (i = 0; i < stars.length; i++) {
+                st = stars[i];
+
+                // Depth parallax: near stars lean away from the
+                // pointer further than far ones.
+                var parx = (px - W / 2) * -PARALLAX * st.z;
+                var pary = (py - H / 2) * -PARALLAX * st.z;
+                var sx = st.hx + st.dx + parx;
+                var sy = st.hy + st.dy + pary;
+
+                // Ring displacement + eddy swirl + cursor wake.
+                var rx = sx - px;
+                var ry = sy - py;
+                var d = Math.sqrt(rx * rx + ry * ry);
+                if (d < RING_R && d > 0.001) {
+                    var push = 1 - d / RING_R;
+                    var f = push * push * RING_PUSH * dt;
+                    st.vx += (rx / d) * f;
+                    st.vy += (ry / d) * f;
+                    var sw = push * RING_SWIRL * dt;
+                    st.vx += (-ry / d) * sw;
+                    st.vy += (rx / d) * sw;
+                    st.vx += pvx * push * WAKE * dt;
+                    st.vy += pvy * push * WAKE * dt;
+                    // The candle catches what it passes.
+                    if (d < RING_R * 0.8) {
+                        st.lit = Math.min(1, st.lit + dt * 3);
                     }
                 }
+                st.lit *= Math.exp(-dt / 2.2);
 
-                // Brighter filaments toward the cursor.
-                var cx = n.x - pointer.x;
-                var cy = n.y - pointer.y;
-                var cd = Math.sqrt(cx * cx + cy * cy);
-                if (cd < CURSOR_DIST) {
-                    ctx.strokeStyle = 'rgba(0,199,190,' + ((1 - cd / CURSOR_DIST) * 0.35).toFixed(3) + ')';
+                // Spring back home, lightly underdamped.
+                st.vx += (-SPRING_K * st.dx - SPRING_C * st.vx) * dt;
+                st.vy += (-SPRING_K * st.dy - SPRING_C * st.vy) * dt;
+                st.dx += st.vx * dt;
+                st.dy += st.vy * dt;
+
+                // Twinkle, and the flare while ignited.
+                var tw = 0.55 + 0.45 * Math.sin(st.phase + t * st.tws);
+                var lit = st.lit;
+                var alpha = Math.min(1,
+                    (0.28 + 0.5 * tw) * (0.35 + 0.65 * st.z) + lit * 0.55);
+                var size = st.s * (0.8 + 0.35 * tw + lit * 1.1);
+
+                if (lit > 0.06) {
+                    // Warm halo while the candlelight holds it.
+                    var g = ctx.createRadialGradient(sx, sy, 0, sx, sy, size * 6);
+                    g.addColorStop(0, 'rgba(' + WARM + ',' + (lit * 0.5).toFixed(3) + ')');
+                    g.addColorStop(1, 'rgba(' + WARM + ',0)');
+                    ctx.fillStyle = g;
                     ctx.beginPath();
-                    ctx.moveTo(n.x, n.y);
-                    ctx.lineTo(pointer.x, pointer.y);
-                    ctx.stroke();
+                    ctx.arc(sx, sy, size * 6, 0, 6.2832);
+                    ctx.fill();
                 }
-            }
 
-            for (i = 0; i < nodes.length; i++) {
-                n = nodes[i];
-                ctx.fillStyle = 'rgba(' + n.c + ',0.75)';
+                sparkle(sx, sy, size, st.rot + lit * 0.7, alpha, st.c);
+                ctx.fillStyle = 'rgba(255,255,255,' + (alpha * 0.9).toFixed(3) + ')';
                 ctx.beginPath();
-                ctx.arc(n.x, n.y, n.r, 0, 6.2832);
+                ctx.arc(sx, sy, Math.max(0.4, size * 0.28), 0, 6.2832);
                 ctx.fill();
             }
 
+            // Shooting stars: bright head dragging a fading tail.
+            for (i = shots.length - 1; i >= 0; i--) {
+                var sh = shots[i];
+                sh.life -= dt;
+                if (sh.life <= 0) {
+                    shots.splice(i, 1);
+                    continue;
+                }
+                sh.x += sh.vx * dt;
+                sh.y += sh.vy * dt;
+                var a2 = Math.min(1, sh.life / 0.9);
+                var tx2 = sh.x - sh.vx * 0.14;
+                var ty2 = sh.y - sh.vy * 0.14;
+                var lg = ctx.createLinearGradient(sh.x, sh.y, tx2, ty2);
+                lg.addColorStop(0, 'rgba(255,255,255,' + (a2 * 0.9).toFixed(3) + ')');
+                lg.addColorStop(1, 'rgba(255,255,255,0)');
+                ctx.strokeStyle = lg;
+                ctx.lineWidth = 1.6;
+                ctx.beginPath();
+                ctx.moveTo(sh.x, sh.y);
+                ctx.lineTo(tx2, ty2);
+                ctx.stroke();
+                sparkle(sh.x, sh.y, 3.2, t * 4, a2, '255,255,255');
+            }
+
+            ctx.globalCompositeOperation = 'source-over';
             return true; // ambient: keep breathing while visible
         });
 
