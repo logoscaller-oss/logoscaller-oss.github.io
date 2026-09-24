@@ -40,6 +40,76 @@ body.spotlight-boost .cursor-spotlight {
 }
 
 // ------------------------------------------------------------
+// Contextual cursor pill — antigravity.google style.
+// Over a [data-cursor-pill] zone the native cursor is hidden and a
+// floating pill (icon + label) takes over. The outer element is
+// translated per-frame by premium-interactions.js (eased trail);
+// the inner element owns the springy pop-in / quick pop-out via
+// CSS transitions, mirroring GSAP back.out(1.7) / power2.in.
+// ------------------------------------------------------------
+.cursor-pill {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    pointer-events: none;
+    will-change: transform;
+}
+
+.cursor-pill-inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 20px 11px 16px;
+    border-radius: 999px;
+    background: #ffffff;
+    color: #111111;
+    border: 1px solid rgba(0, 0, 0, 0.14);
+    white-space: nowrap;
+    font-family: $font-family;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    line-height: 1;
+    box-shadow:
+        0 10px 28px rgba(0, 0, 0, 0.45),
+        0 0 34px rgba($primary-color, 0.28);
+    // Resting state: collapsed and faded out.
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+    // Exit ≈ power2.in — quick shrink, no overshoot.
+    transition: transform 0.2s ease-in, opacity 0.15s ease-in;
+}
+
+.cursor-pill-icon {
+    font-size: 15px;
+    color: $primary-color;
+}
+
+.cursor-pill.is-active .cursor-pill-inner {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+    // Entry ≈ back.out(1.7) — springy overshoot past scale(1).
+    transition: transform 0.34s cubic-bezier(0.34, 1.7, 0.64, 1), opacity 0.2s ease-out;
+}
+
+.cursor-pill.is-active.is-press .cursor-pill-inner {
+    transform: translate(-50%, -50%) scale(0.92);
+    transition: transform 0.12s ease-out, opacity 0.2s ease-out;
+}
+
+// Hide the native cursor inside pill zones ONLY once JS has booted
+// (premium-interactions.js adds the body class). Without JS the
+// system cursor always stays visible.
+body.cursor-pill-live [data-cursor-pill],
+body.cursor-pill-live [data-cursor-pill] * {
+    cursor: none;
+}
+
+// ------------------------------------------------------------
 // Pointer parallax — aurora field and hero drift with cursor.
 // Transform values are written per-frame by premium-interactions.js.
 // ------------------------------------------------------------
@@ -249,8 +319,15 @@ footer .social-links a {
 // Reduced motion — kill the movement, keep the page readable
 // ------------------------------------------------------------
 @media (prefers-reduced-motion: reduce) {
-    .cursor-spotlight {
+    .cursor-spotlight,
+    .cursor-pill {
         display: none;
+    }
+
+    // Never hide the native cursor if the pill can't animate.
+    body.cursor-pill-live [data-cursor-pill],
+    body.cursor-pill-live [data-cursor-pill] * {
+        cursor: auto;
     }
 
     .text-gradient {
